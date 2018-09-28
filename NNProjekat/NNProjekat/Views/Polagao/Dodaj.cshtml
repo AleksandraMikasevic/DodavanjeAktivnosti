@@ -1,0 +1,13 @@
+﻿@model PolagaoDodaj
+@{
+    ViewBag.Title = "Dodavanje polaganja";
+}
+
+<form method="post" asp-action="DodajPost" asp-controller="Polagao">
+    <select asp-for="JMBG" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","Prezime"))"></select>
+    <select asp-for="BrojIndeksa" asp-items="@(new SelectList(Model.Studenti, "BrojIndeksa","Prezime"))"></select>
+    <input asp-for="SifraAktivnosti" type="text" name="SifraAktivnosti" value=@Model.SifraAktivnosti />
+    <input asp-for="SifraPredmeta" type="text" name="SifraPredmeta" value=@Model.SifraPredmeta />
+    <input asp-for="BrojPoena" type="text" name="BrojPoena" value="" />
+    <input type="submit" name="sacuvaj" value="Sacuvaj" />
+</form>
