@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NNProjekat.Data;
 using NNProjekat.Models;
 
@@ -28,9 +29,16 @@ namespace NNProjekat.Services
             return _context.Studenti.OrderBy(r => r.BrojIndeksa);
         }
 
+        public IEnumerable<Slusa> UcitajSvePoPredmetu(string id)
+        {
+            return _context.Slusanja.Include(p => p.Student).Include(p => p.Predmet).Where(p => p.SifraPredmeta==id).OrderBy(p => p.BrojIndeksa);
+        }
+
         public Student Vrati(string brojIndeksa)
         {
             return _context.Studenti.FirstOrDefault(r => r.BrojIndeksa == brojIndeksa);
         }
+
+   
     }
 }

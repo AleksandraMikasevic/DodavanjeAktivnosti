@@ -11,5 +11,6 @@ namespace NNProjekat.Services
         IEnumerable<Polagao> UcitajSvePoStudentuIPredmetu(string brojIndeksa, string sifraPredmeta);
         Polagao Dodaj(Polagao polagao);
         Polagao Izmeni(Polagao polagao);
+        IEnumerable<Polagao> Vrati(string sifraPredmeta, string brojIndeksa);
     }
 }

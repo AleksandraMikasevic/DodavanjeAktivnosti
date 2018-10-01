@@ -11,9 +11,10 @@ using System;
 namespace NNProjekat.Migrations
 {
     [DbContext(typeof(NNProjekatDbContext))]
-    partial class NNProjekatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181001183149_ThirdMigration")]
+    partial class ThirdMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,8 +128,6 @@ namespace NNProjekat.Migrations
 
                     b.HasKey("SifraPredmeta", "BrojIndeksa");
 
-                    b.HasIndex("BrojIndeksa");
-
                     b.ToTable("Slusanja");
                 });
 
@@ -182,19 +181,6 @@ namespace NNProjekat.Migrations
                     b.HasOne("NNProjekat.Models.Aktivnost", "Aktivnost")
                         .WithMany()
                         .HasForeignKey("SifraAktivnosti", "SifraPredmeta")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Slusa", b =>
-                {
-                    b.HasOne("NNProjekat.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("BrojIndeksa")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("NNProjekat.Models.Predmet", "Predmet")
-                        .WithMany()
-                        .HasForeignKey("SifraPredmeta")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

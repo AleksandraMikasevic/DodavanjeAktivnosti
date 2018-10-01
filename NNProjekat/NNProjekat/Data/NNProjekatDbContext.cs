@@ -20,6 +20,7 @@ namespace NNProjekat.Data
         public DbSet<Polagao> Polaganja { get; set; }
         public DbSet<Predmet> Predmeti { get; set; }
         public DbSet<Student> Studenti { get; set; }
+        public DbSet<Slusa> Slusanja { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,6 +30,8 @@ namespace NNProjekat.Data
             builder.Entity<Nastavnik>().HasKey(t => new { t.JMBG });
             builder.Entity<Student>().HasKey(t => new { t.BrojIndeksa });
             builder.Entity<Predmet>().HasKey(t => new { t.SifraPredmeta });
+            builder.Entity<Slusa>().HasKey(t => new { t.SifraPredmeta, t.BrojIndeksa});
+
         }
     }
 }

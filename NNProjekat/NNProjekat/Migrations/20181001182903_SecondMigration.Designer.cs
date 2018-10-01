@@ -11,9 +11,10 @@ using System;
 namespace NNProjekat.Migrations
 {
     [DbContext(typeof(NNProjekatDbContext))]
-    partial class NNProjekatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181001182903_SecondMigration")]
+    partial class SecondMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,21 +118,6 @@ namespace NNProjekat.Migrations
                     b.ToTable("Predmeti");
                 });
 
-            modelBuilder.Entity("NNProjekat.Models.Slusa", b =>
-                {
-                    b.Property<string>("SifraPredmeta");
-
-                    b.Property<string>("BrojIndeksa");
-
-                    b.Property<DateTime>("DatumPrvogUpisa");
-
-                    b.HasKey("SifraPredmeta", "BrojIndeksa");
-
-                    b.HasIndex("BrojIndeksa");
-
-                    b.ToTable("Slusanja");
-                });
-
             modelBuilder.Entity("NNProjekat.Models.Student", b =>
                 {
                     b.Property<string>("BrojIndeksa")
@@ -182,19 +168,6 @@ namespace NNProjekat.Migrations
                     b.HasOne("NNProjekat.Models.Aktivnost", "Aktivnost")
                         .WithMany()
                         .HasForeignKey("SifraAktivnosti", "SifraPredmeta")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Slusa", b =>
-                {
-                    b.HasOne("NNProjekat.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("BrojIndeksa")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("NNProjekat.Models.Predmet", "Predmet")
-                        .WithMany()
-                        .HasForeignKey("SifraPredmeta")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

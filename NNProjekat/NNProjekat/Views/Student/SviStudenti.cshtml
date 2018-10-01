@@ -1,22 +1,21 @@
-﻿@model IQueryable<Predmet>
+﻿@model IQueryable<Student>
 @{
-    ViewBag.Title = "Predmeti";
+    ViewBag.Title = "Studenti";
 }
 <div style="width:90%; margin:0 auto;">
     <table id="predmetTabela" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th><div>SifraPredmeta</div></th>
-                <th><div>Naziv</div></th>
-                <th><div>BrojESPB</div></th>
-                <th><div>Aktivnosti</div></th>
-                <th><div>Studenti</div></th>
-
+                <th><div>BrojIndeksa</div></th>
+                <th><div>Ime</div></th>
+                <th><div>Prezime</div></th>
+                <th><div>Dodaj</div></th>
             </tr>
         </thead>
     </table>
 </div>
 <script>
+
     $(document).ready(function () {
         $("#predmetTabela").DataTable({
             "language": {
@@ -31,8 +30,8 @@
                 "loadingRecords": "Ucitavanje podataka",
                 "emptyTable": "Tabela je prazna",
                 "zeroRecords": "Tabela je prazna",
-                "info": "Prikazivanje _START_ do _END_ od _TOTAL_ predmeta",
-                "lengthMenu": "Prikazi _MENU_  predmeta"
+                "info": "Prikazivanje _START_ do _END_ od _TOTAL_ studenata",
+                "lengthMenu": "Prikazi _MENU_  studenata"
 
             },
             "destroy": true,
@@ -41,26 +40,24 @@
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
             "ajax": {
-                "url": "/Predmet/VratiPredmete",
+                "url": "/Student/VratiStudente/" + getQueryStringValue("id"),
                 "type": "POST",
                 "datatype": "json"
             },
             "columns": [
-                { "data": "SifraPredmeta", "name": "SifraPredmeta", "autoWidth": true },
-                { "data": "Naziv", "name": "Naziv", "autoWidth": true },
-                { "data": "BrojESPB", "name": "BrojESPB", "autoWidth": true },
+                { "data": "BrojIndeksa", "name": "BrojIndeksa", "autoWidth": true },
+                { "data": "Ime", "name": "Ime", "autoWidth": true },
+                { "data": "Prezime", "name": "Prezime", "autoWidth": true },
 
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Predmet/PrikazPredmeta/'+full.SifraPredmeta+'">Prikaz</a>'; }
-                },
-
-                {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Student/StudentiPoPredmetu/' + full.SifraPredmeta + '">Prikaz</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Polagao/Dodaj'+full.BrojIndeksa+'">Dodaj</a>'; }
                 }
             ]
 
         });
     });
 
-
+    function getQueryStringValue(key) {
+        return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+    }  
 </script>

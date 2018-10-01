@@ -11,5 +11,6 @@ namespace NNProjekat.Services
         IEnumerable<Student> UcitajSve();
         Student Vrati(string brojIndeksa);
         Student Dodaj(Student student);
+        IEnumerable<Slusa> UcitajSvePoPredmetu(string id);
     }
 }

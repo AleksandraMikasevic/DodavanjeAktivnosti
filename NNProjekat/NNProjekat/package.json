@@ -12,6 +12,7 @@
     "datatables-all": "1.10.13",
     "Newtonsoft.Json": "10.0.3",
     "datatables.net": "1.10.19",
-    "datatables.net-dt": "1.10.19"
+    "datatables.net-dt": "1.10.19",
+    "jquery-ui": "1.12.1"
   }
 }

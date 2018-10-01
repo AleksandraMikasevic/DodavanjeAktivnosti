@@ -17,6 +17,7 @@ namespace NNProjekat.ViewModels
         public string SifraPredmeta { get; set; }
         public double BrojPoena { get; set; }
         public bool Status { get; set; }
+        public DateTime Datum { get; set; }
         public Nastavnik IzabraniNastavnik { get; set; }
         public Student IzabraniStudent { get; set; }
         public Aktivnost Aktivnost { get; set; }

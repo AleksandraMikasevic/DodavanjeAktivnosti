@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NNProjekat.Models;
 using NNProjekat.Services;
+using NNProjekat.ViewModels;
 
 namespace NNProjekat.Controllers
 {
-    public class PredmetController : Controller
+    public class StudentController : Controller
     {
-        private IPredmetData _predmetData;
+        private IStudentData _studentData;
 
-        public PredmetController(IPredmetData predmetData)
+        public StudentController(IStudentData studentData)
         {
-            _predmetData = predmetData;
+            _studentData = studentData;
         }
-        public IActionResult SviPredmeti()
+
+        public IActionResult SviStudenti()
         {
-            Console.WriteLine("Aleksandra");
-            var model = _predmetData.UcitajSve();
+            Console.WriteLine("Studenti");
+            var model = _studentData.UcitajSve();
             return View(model);
         }
+
         [HttpPost]
-        public IActionResult VratiPredmete()
+        public IActionResult VratiStudente()
         {
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -36,11 +37,11 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-            var model = _predmetData.UcitajSve();
+            var model = _studentData.UcitajSve();
 
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
-                var sortProperty = typeof(Predmet).GetProperty(sortColumn);
+                var sortProperty = typeof(Student).GetProperty(sortColumn);
                 if (sortColumnDirection == "asc")
                 {
                     model = model.OrderBy(p => sortProperty.GetValue(p, null));
@@ -53,24 +54,27 @@ namespace NNProjekat.Controllers
 
             if (!string.IsNullOrEmpty(searchValue))
             {
-                model = model.Where(m => m.Naziv.StartsWith(searchValue, true, null));
+                model = model.Where(m => m.BrojIndeksa.StartsWith(searchValue, true, null));
             }
             recordsTotal = model.Count();
             var data = model.Skip(skip).Take(pageSize).ToList();
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
 
-        public IActionResult PrikazPredmeta(string id)
+        public IActionResult StudentiPoPredmetu(string id)
         {
-
-            Predmet predmet = _predmetData.Vrati(id);
-            return View(predmet);
+            Console.WriteLine("Studenti");
+            var model = new StudentSviStudenti();
+            model.Studenti = _studentData.UcitajSvePoPredmetu(id);
+            model.SifraPredmeta = id;
+            return View(model);
         }
 
+        [Route("/Student/VratiStudentePoPredmetu/{id}")]
         [HttpPost]
-        public IActionResult VratiAktivnosti(string id)
+        public IActionResult VratiStudentePoPredmetu(string id)
         {
-            Console.WriteLine("VRATI AKTIVNOSTI");
+            Console.WriteLine("ID: ++++++++++++++++++"+id);
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
             var length = Request.Form["length"].FirstOrDefault();
@@ -80,10 +84,11 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-            var model = _predmetData.Vrati(id).Aktivnosti;
+            var model = _studentData.UcitajSvePoPredmetu(id);
+            Console.WriteLine(model.ToList().Count+"------------------------------DUZINA SLUSANJAAA");
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
-                var sortProperty = typeof(Aktivnost).GetProperty(sortColumn);
+                var sortProperty = typeof(Slusa).GetProperty(sortColumn);
                 if (sortColumnDirection == "asc")
                 {
                     model = model.OrderBy(p => sortProperty.GetValue(p, null));
@@ -96,9 +101,7 @@ namespace NNProjekat.Controllers
 
             if (!string.IsNullOrEmpty(searchValue))
             {
-                Console.WriteLine("SEARCH VALUEEE--------------------------------------"+searchValue);
-                model = model.Where(m => m.Naziv.StartsWith(
-                    searchValue, true, null));
+                model = model.Where(m => m.BrojIndeksa.StartsWith(searchValue, true, null));
             }
             recordsTotal = model.Count();
             var data = model.Skip(skip).Take(pageSize).ToList();
