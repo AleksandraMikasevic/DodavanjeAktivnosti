@@ -12,10 +12,12 @@ namespace NNProjekat.Controllers
     public class StudentController : Controller
     {
         private IStudentData _studentData;
+        private IPredmetData _predmetData;
 
-        public StudentController(IStudentData studentData)
+        public StudentController(IStudentData studentData, IPredmetData predmetData)
         {
             _studentData = studentData;
+            _predmetData = predmetData;
         }
 
         public IActionResult SviStudenti()
@@ -67,6 +69,7 @@ namespace NNProjekat.Controllers
             var model = new StudentSviStudenti();
             model.Studenti = _studentData.UcitajSvePoPredmetu(id);
             model.SifraPredmeta = id;
+            model.Predmet = _predmetData.Vrati(id);
             return View(model);
         }
 

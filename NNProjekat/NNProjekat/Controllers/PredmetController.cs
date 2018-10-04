@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NNProjekat.Models;
@@ -105,5 +106,16 @@ namespace NNProjekat.Controllers
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
 
+
+
+        [HttpPost]
+        public IActionResult VratiAktivnostiZaCB(string id)
+        {
+            IEnumerable<Aktivnost> aktivnosti = new List<Aktivnost>();
+            aktivnosti = _predmetData.Vrati(id).Aktivnosti;
+            SelectList aktivnostiSel = new SelectList(aktivnosti, "SifraAktivnosti", "Naziv", 0);
+            return Json(aktivnostiSel);
+
+        }
     }
 }

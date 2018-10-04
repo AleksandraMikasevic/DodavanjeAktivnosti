@@ -16,6 +16,13 @@ namespace NNProjekat.Services
         {
             _context = context;
         }
+
+        public IEnumerable<Aktivnost> UcitajSve()
+        {
+            return _context.Aktivnosti.Include(a => a.Predmet);
+
+        }
+
         public IEnumerable<Aktivnost> UcitajSvePoPredmetu(string sifraPredmeta)
         {
             return _context.Aktivnosti.Include(a => a.Predmet).Where(a=> a.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);

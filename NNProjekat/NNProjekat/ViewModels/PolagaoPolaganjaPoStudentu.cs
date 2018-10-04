@@ -1,15 +1,13 @@
-﻿using NNProjekat.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace NNProjekat.ViewModels
 {
-    public class StudentSviStudenti
+    public class PolagaoPolaganjaPoStudentu
     {
-        public IEnumerable<Slusa> Studenti { get; set; }
+        public string BrojIndeksa { get; set; }
         public string SifraPredmeta { get; set; }
-        public Predmet Predmet { get; set; }
     }
 }

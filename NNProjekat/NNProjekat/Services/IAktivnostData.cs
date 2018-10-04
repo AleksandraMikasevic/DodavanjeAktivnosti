@@ -9,5 +9,6 @@ namespace NNProjekat.Services
     public interface IAktivnostData
     {
         IEnumerable<Aktivnost> UcitajSvePoPredmetu(string sifraPredmeta);
+        IEnumerable<Aktivnost> UcitajSve();
     }
 }

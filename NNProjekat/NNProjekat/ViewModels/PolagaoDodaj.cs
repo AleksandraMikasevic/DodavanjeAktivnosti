@@ -11,6 +11,8 @@ namespace NNProjekat.ViewModels
     {
         public IEnumerable<Nastavnik> Nastavnici { get; set; }
         public IEnumerable<Student> Studenti { get; set; }
+        public IEnumerable<Predmet> Predmeti { get; set; }
+        public IEnumerable<Aktivnost> Aktivnosti { get; set; }
         public string BrojIndeksa { get; set; }
         public string JMBG { get; set; }
         public string SifraAktivnosti { get; set; }
@@ -21,5 +23,6 @@ namespace NNProjekat.ViewModels
         public Nastavnik IzabraniNastavnik { get; set; }
         public Student IzabraniStudent { get; set; }
         public Aktivnost Aktivnost { get; set; }
+
     }
 }

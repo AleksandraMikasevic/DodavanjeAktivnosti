@@ -14,24 +14,38 @@ namespace NNProjekat.Controllers
         private IPolaganjaData _polagaoData;
         private IAktivnostData _aktivnostData;
         private IStudentData _studentData;
+        private IPredmetData _predmetData;
         private INastavnikData _nastavnikData;
 
-        public PolagaoController(IPolaganjaData polagaoData, IStudentData studentData, IAktivnostData aktivnostData, INastavnikData nastavnikData)
+        public PolagaoController(IPolaganjaData polagaoData, IStudentData studentData, IAktivnostData aktivnostData, INastavnikData nastavnikData, IPredmetData predmetData)
         {
             _polagaoData = polagaoData;
             _aktivnostData = aktivnostData;
             _studentData = studentData;
+            _predmetData = predmetData;
             _nastavnikData = nastavnikData;
         }
 
-        [Route("/Polagao/Dodaj/{sifraPredmeta}/{sifraAktivnosti}")]
+        [Route("/Polagao/Dodaj/{sifraPredmeta}/{sifraAktivnosti}/{JMBG}/{BrojIndeksa}")]
         [HttpGet]
-        public IActionResult Dodaj(string sifraPredmeta, string sifraAktivnosti)
+        public IActionResult Dodaj(string sifraPredmeta, string sifraAktivnosti, string JMBG, string BrojIndeksa)
         {
             PolagaoDodaj model = new PolagaoDodaj();
             model.SifraAktivnosti = sifraAktivnosti;
             model.SifraPredmeta = sifraPredmeta;
+            model.JMBG = JMBG;
+            model.BrojIndeksa = BrojIndeksa;
             model.Nastavnici = _nastavnikData.UcitajSve();
+            model.Predmeti = _predmetData.UcitajSve();
+            Console.WriteLine(sifraPredmeta+"SIFRA PReDMetAAAAAAAAAAAAAAA-------------");
+            if (sifraPredmeta != "undefined")
+            {
+                model.Aktivnosti = _predmetData.Vrati(sifraPredmeta).Aktivnosti;
+            }
+            else
+            {
+                model.Aktivnosti = _aktivnostData.UcitajSve();
+            }
             Console.WriteLine(model.Nastavnici.ToList().Count+"===============DUZINA LISTE");
             model.Studenti = _studentData.UcitajSve();
             return View(model);
@@ -56,11 +70,20 @@ namespace NNProjekat.Controllers
             return RedirectToAction("SviPredmeti", "Predmet");
         }
 
+        [Route("/Polagao/PolaganjaPoStudentu/{sifraPredmeta}/{brojIndeksa}")]
+        public IActionResult PolaganjaPoStudentu(string sifraPredmeta, string brojIndeksa)
+        {
+            PolagaoPolaganjaPoStudentu model = new PolagaoPolaganjaPoStudentu();
+            model.BrojIndeksa = brojIndeksa;
+            model.SifraPredmeta = sifraPredmeta;
+            return View(model);
+        }
+
         [Route("/Polagao/VratiPolaganja/{sifraPredmeta}/{brojIndeksa}")]
         [HttpPost]
         public IActionResult VratiPolaganja(string sifraPredmeta, string brojIndeksa)
         {
-            Console.WriteLine("VRATI AKTIVNOSTI");
+            Console.WriteLine("VRATI POLAGANJAAAAAAAAAAAA------------------------------------------1");
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
             var length = Request.Form["length"].FirstOrDefault();
@@ -70,10 +93,12 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-            var model = _polagaoData.Vrati(sifraPredmeta, brojIndeksa).Aktivnosti;
+            Console.WriteLine("VRATI POLAGANJAAAAAAAAAAAA------------------------------------------2");
+
+            var model = _polagaoData.Vrati(sifraPredmeta, brojIndeksa);
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
-                var sortProperty = typeof(Aktivnost).GetProperty(sortColumn);
+                var sortProperty = typeof(Polagao).GetProperty(sortColumn);
                 if (sortColumnDirection == "asc")
                 {
                     model = model.OrderBy(p => sortProperty.GetValue(p, null));
@@ -87,7 +112,7 @@ namespace NNProjekat.Controllers
             if (!string.IsNullOrEmpty(searchValue))
             {
                 Console.WriteLine("SEARCH VALUEEE--------------------------------------" + searchValue);
-                model = model.Where(m => m.Naziv.StartsWith(
+                model = model.Where(m => m.BrojIndeksa.StartsWith(
                     searchValue, true, null));
             }
             recordsTotal = model.Count();

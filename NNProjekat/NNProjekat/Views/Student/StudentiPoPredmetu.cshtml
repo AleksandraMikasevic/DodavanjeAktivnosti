@@ -2,6 +2,12 @@
 @{
     ViewBag.Title = "Studenti";
 }
+<br />
+<div class="list-group" style="width:90%; margin:0 auto;">
+    <div class="list-group-item">
+        @Model.Predmet.Naziv
+    </div>
+</div>
 <div style="width:90%; margin:0 auto;">
     <table id="predmetTabela" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
         <thead>
@@ -10,6 +16,7 @@
                 <th><div>Ime</div></th>
                 <th><div>Prezime</div></th>
                 <th><div>Dodaj</div></th>
+                <th><div>Prikaz</div></th>
             </tr>
         </thead>
     </table>
@@ -43,13 +50,22 @@
                 "type": "post",
                 "datatype": "json"
             },
+            "columnDefs": [{
+                "targets": [3, 4],
+                "orderable": false
+            }],
             "columns": [
                 { "data": "Student.BrojIndeksa", "name": "BrojIndeksa", "autoWidth": true },
                 { "data": "Student.Ime", "name": "Ime", "autoWidth": true },
                 { "data": "Student.Prezime", "name": "Prezime", "autoWidth": true },
 
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Polagao/Dodaj'+full.BrojIndeksa+'">Dodaj</a>'; }
+
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Polagao/Dodaj/' + '@Html.Raw(Model.SifraPredmeta)' + '/' + "undefined" + '/' + "undefined" + '/' + full.BrojIndeksa + '">Dodaj</a>'; }
+                },
+                {
+
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Polagao/PolaganjaPoStudentu/'+'@Html.Raw(Model.SifraPredmeta)'+'/' + full.BrojIndeksa + '">Prikazi</a>'; }
                 }
             ]
 

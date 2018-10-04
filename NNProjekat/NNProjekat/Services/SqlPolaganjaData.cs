@@ -34,5 +34,12 @@ namespace NNProjekat.Services
                 .Include(p => p.Nastavnik).Include(p => p.Student).Include(p => p.Aktivnost)
                 .Where(p => p.Student.BrojIndeksa == brojIndeksa).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
         }
+
+        public IEnumerable<Polagao> Vrati(string sifraPredmeta, string brojIndeksa)
+        {
+            return _context.Polaganja.Include(p => p.Aktivnost)
+                .Include(p => p.Nastavnik).Include(p => p.Student).Include(p => p.Aktivnost)
+                .Where(p => p.Student.BrojIndeksa == brojIndeksa).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
+        }
     }
 }

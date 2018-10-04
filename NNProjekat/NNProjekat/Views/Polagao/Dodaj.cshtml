@@ -14,19 +14,20 @@
         <form method="post" asp-action="DodajPost" asp-controller="Polagao">
             <div class="form-group">
                 <label asp-for="JMBG"></label>
-                <select asp-for="JMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))"></select>
+                <select asp-for="JMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.JMBG></select>
             </div>
             <div class="form-group">
                 <label asp-for="BrojIndeksa"></label>
-                <select asp-for="BrojIndeksa" class="form-control" asp-items="@(new SelectList(Model.Studenti, "BrojIndeksa","BrojIndeksa"))"></select>
+                <select asp-for="BrojIndeksa" class="form-control" asp-items="@(new SelectList(Model.Studenti, "BrojIndeksa","BrojIndeksa"))" value=@Model.BrojIndeksa></select>
             </div>
             <div class="form-group">
                 <label asp-for="SifraAktivnosti"></label>
-                <input asp-for="SifraAktivnosti" class="form-control" type="text" name="SifraAktivnosti" value=@Model.SifraAktivnosti />
+                <select id="aktivnosti" name = "aktivnosti" asp-for="SifraAktivnosti" class="form-control" asp-items="@(new SelectList(Model.Aktivnosti, "SifraAktivnosti","Naziv"))" value=@Model.SifraAktivnosti></select>
             </div>
             <div class="form-group">
                 <label asp-for="SifraPredmeta"></label>
-                <input asp-for="SifraPredmeta" class="form-control" type="text" name="SifraPredmeta" value=@Model.SifraPredmeta />
+                <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="UbaciAktivnosti()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
+
             </div>
             <div class="form-group">
                 <label asp-for="BrojPoena"></label>
@@ -34,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Datum"></label>
-                <input asp-for="Datum" id="datepicker"  placeholder="Datum" class="form-control" type="text" name="Datum" value="" />
+                <input asp-for="Datum" id="datepicker" placeholder="Datum" class="form-control" type="text" name="Datum" value="" />
             </div>
             <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
         </form>
@@ -42,6 +43,29 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#datepicker").datepicker({dateFormat: 'dd.mm.yy'});
+        $("#datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
     });
+
+
+    function UbaciAktivnosti() {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#aktivnosti").html(procemessage).show();
+        var url = "/Predmet/VratiAktivnostiZaCB/";
+        var _sifraPredmeta =$('#predmeti').find(":selected").val();;
+        $.ajax({
+            url: "/Predmet/VratiAktivnostiZaCB/"+ _sifraPredmeta,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#aktivnosti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
 </script>
