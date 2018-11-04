@@ -14,10 +14,12 @@ namespace NNProjekat.Controllers
     public class PredmetController : Controller
     {
         private IPredmetData _predmetData;
+        private ISlusanjaData _slusanjaData;
 
-        public PredmetController(IPredmetData predmetData)
+        public PredmetController(IPredmetData predmetData, ISlusanjaData slusanjaData)
         {
             _predmetData = predmetData;
+            _slusanjaData = slusanjaData;
         }
         public IActionResult SviPredmeti()
         {
@@ -69,7 +71,7 @@ namespace NNProjekat.Controllers
         }
 
         [HttpPost]
-        public IActionResult VratiAktivnosti(string id)
+        public IActionResult VratiTipoveAktivnosti(string id)
         {
             Console.WriteLine("VRATI AKTIVNOSTI");
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
@@ -81,10 +83,10 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-            var model = _predmetData.Vrati(id).Aktivnosti;
+            var model = _predmetData.Vrati(id).TipoviAktivnosti;
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
-                var sortProperty = typeof(Aktivnost).GetProperty(sortColumn);
+                var sortProperty = typeof(TipAktivnosti).GetProperty(sortColumn);
                 if (sortColumnDirection == "asc")
                 {
                     model = model.OrderBy(p => sortProperty.GetValue(p, null));
@@ -97,7 +99,7 @@ namespace NNProjekat.Controllers
 
             if (!string.IsNullOrEmpty(searchValue))
             {
-                Console.WriteLine("SEARCH VALUEEE--------------------------------------"+searchValue);
+                Console.WriteLine("SEARCH VALUEEE--------------------------------------" + searchValue);
                 model = model.Where(m => m.Naziv.StartsWith(
                     searchValue, true, null));
             }
@@ -109,13 +111,24 @@ namespace NNProjekat.Controllers
 
 
         [HttpPost]
-        public IActionResult VratiAktivnostiZaCB(string id)
+        public IActionResult VratiTipoveAktivnostiZaCB(string id)
         {
-            IEnumerable<Aktivnost> aktivnosti = new List<Aktivnost>();
-            aktivnosti = _predmetData.Vrati(id).Aktivnosti;
-            SelectList aktivnostiSel = new SelectList(aktivnosti, "SifraAktivnosti", "Naziv", 0);
+            IEnumerable<TipAktivnosti> tipoviAktivnosti = new List<TipAktivnosti>();
+            tipoviAktivnosti = _predmetData.Vrati(id).TipoviAktivnosti;
+            SelectList aktivnostiSel = new SelectList(tipoviAktivnosti, "SifraTipaAktivnosti", "Naziv", 0);
             return Json(aktivnostiSel);
+        }
+        [HttpPost]
+        public IActionResult VratiStudenteZaCb(string id) { 
+            IEnumerable<Slusa> slusanja = new List<Slusa>();
+            slusanja = _slusanjaData.UcitajSveStudente(id);
+            List<Student> studenti = new List<Student>();
+            foreach (Slusa slusa in slusanja) {
+                studenti.Add(slusa.Student);
+            }
 
+            SelectList studentiSel = new SelectList(studenti, "JMBG", "BrojIndeksa", 0);
+            return Json(studentiSel);
         }
     }
 }

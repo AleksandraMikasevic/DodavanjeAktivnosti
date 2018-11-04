@@ -5,11 +5,8 @@ using System.Threading.Tasks;
 
 namespace NNProjekat.Models
 {
-    public class Nastavnik
+    public class Nastavnik:Osoba
     {
-        public string Ime { get; set; }
-        public string Prezime { get; set; }
-        public string JMBG { get; set; }
         public string Pozicija { get; set; }
     }
 }

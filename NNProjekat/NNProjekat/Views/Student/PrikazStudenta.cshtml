@@ -1,0 +1,74 @@
+﻿@model StudentPrikazStudenta
+@{
+    ViewBag.Title = "Prikaz studenta";
+}
+<br />
+<div class="list-group" style="width:90%; margin:0 auto;">
+    <div class="list-group-item">
+        @Model.Slusa.Student.Ime  @Model.Slusa.Student.Prezime/@Model.Slusa.Predmet.Naziv
+    </div>
+</div>
+<br />
+<ul class="list-group" style="width:90%; margin:0 auto;">
+    @for (var i = 0; i < Model.Slusa.Predmet.TipoviAktivnosti.ToList().Count; i++)
+    {
+        bool pronadjen = false;
+        <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+
+            @Model.Slusa.Predmet.TipoviAktivnosti.ToList()[i].SifraTipaAktivnosti. @Model.Slusa.Predmet.TipoviAktivnosti.ToList()[i].Naziv
+            @for (var j = 0; j < Model.AktivnostiStudenta.ToList().Count; j++)
+            {
+                if (Model.AktivnostiStudenta.ToList()[j].SifraTipaAktivnosti == @Model.Slusa.Predmet.TipoviAktivnosti.ToList()[i].SifraTipaAktivnosti)
+                {
+                    pronadjen = true;
+                    <span>
+                        @Model.AktivnostiStudenta.ToList()[j].BrojPoena
+                    </span>
+                    break;
+                }
+            }
+
+            @if (pronadjen == false)
+            {
+                <span>
+                    0
+                </span>
+            }
+        </li>
+    }
+</ul>
+<br />
+<div class="list-group">
+    <div class="prikazStudentaOcena list-group-item  d-flex justify-content-between align-items-center">
+        @if (Model.Slusa.ZakljucenaOcena == null)
+        {
+            <span>Predložena ocena</span>
+            <span>
+                @Model.Slusa.PredlozenaOcena
+                @if (Model.Slusa.PredlozenaOcena > 5)
+                {
+                    <a href="/Student/ZakljuciOcenu/@Model.Slusa.JMBG/@Model.Slusa.SifraPredmeta">
+                        <i class="fa fa-check" style="font-size:24px"></i>
+                    </a>
+                }
+            </span>
+        }
+
+        else
+        {
+            <span>Zaljučena ocena</span>
+            <span>@Model.Slusa.ZakljucenaOcena</span>
+        }
+    </div>
+</div>
+<br />
+
+@{Html.BeginForm("KreirajPDF", "Student", FormMethod.Get);
+    {
+        <div style="width:90%; margin:0 auto;">
+            <button type="submit" class="btn btn-info fa fa-file-pdf-o" />
+        </div>
+    }
+    Html.EndForm();
+
+}

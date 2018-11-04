@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using NNProjekat.Data;
 using System;
 
@@ -22,71 +23,13 @@ namespace NNProjekat.Migrations
 
             modelBuilder.Entity("NNProjekat.Models.Aktivnost", b =>
                 {
-                    b.Property<string>("SifraAktivnosti");
+                    b.Property<string>("StudentJMBG");
 
-                    b.Property<string>("SifraPredmeta");
-
-                    b.Property<double>("MaxBrojPoena");
-
-                    b.Property<double>("MinBrojPoena");
-
-                    b.Property<string>("Naziv");
-
-                    b.Property<bool>("Obavezna");
-
-                    b.Property<double>("TezinskiKoeficijent");
-
-                    b.HasKey("SifraAktivnosti", "SifraPredmeta");
-
-                    b.HasIndex("SifraPredmeta");
-
-                    b.ToTable("Aktivnosti");
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Nastavnik", b =>
-                {
-                    b.Property<string>("JMBG")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Ime");
-
-                    b.Property<string>("Pozicija");
-
-                    b.Property<string>("Prezime");
-
-                    b.HasKey("JMBG");
-
-                    b.ToTable("Nastavnici");
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Ocena", b =>
-                {
-                    b.Property<string>("BrojIndeksa");
-
-                    b.Property<string>("SifraPredmeta");
-
-                    b.Property<DateTime>("DatumZakljucivanja");
-
-                    b.Property<int>("PredlozenaOcena");
-
-                    b.Property<int>("ZakljucenaOcena");
-
-                    b.HasKey("BrojIndeksa", "SifraPredmeta", "DatumZakljucivanja");
-
-                    b.HasIndex("SifraPredmeta");
-
-                    b.ToTable("Ocene");
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Polagao", b =>
-                {
-                    b.Property<string>("BrojIndeksa");
-
-                    b.Property<string>("JMBG");
+                    b.Property<string>("NastavnikJMBG");
 
                     b.Property<DateTime>("Datum");
 
-                    b.Property<string>("SifraAktivnosti");
+                    b.Property<string>("SifraTipaAktivnosti");
 
                     b.Property<string>("SifraPredmeta");
 
@@ -94,13 +37,32 @@ namespace NNProjekat.Migrations
 
                     b.Property<bool>("Status");
 
-                    b.HasKey("BrojIndeksa", "JMBG", "Datum", "SifraAktivnosti", "SifraPredmeta");
+                    b.HasKey("StudentJMBG", "NastavnikJMBG", "Datum", "SifraTipaAktivnosti", "SifraPredmeta");
 
-                    b.HasIndex("JMBG");
+                    b.HasIndex("NastavnikJMBG");
 
-                    b.HasIndex("SifraAktivnosti", "SifraPredmeta");
+                    b.HasIndex("SifraTipaAktivnosti", "SifraPredmeta");
 
-                    b.ToTable("Polaganja");
+                    b.ToTable("Aktivnosti");
+                });
+
+            modelBuilder.Entity("NNProjekat.Models.Osoba", b =>
+                {
+                    b.Property<string>("JMBG")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Ime");
+
+                    b.Property<string>("Prezime");
+
+                    b.Property<string>("tip_osobe")
+                        .IsRequired();
+
+                    b.HasKey("JMBG");
+
+                    b.ToTable("Osobe");
+
+                    b.HasDiscriminator<string>("tip_osobe").HasValue("Osoba");
                 });
 
             modelBuilder.Entity("NNProjekat.Models.Predmet", b =>
@@ -121,67 +83,83 @@ namespace NNProjekat.Migrations
                 {
                     b.Property<string>("SifraPredmeta");
 
-                    b.Property<string>("BrojIndeksa");
+                    b.Property<string>("JMBG");
 
                     b.Property<DateTime>("DatumPrvogUpisa");
 
-                    b.HasKey("SifraPredmeta", "BrojIndeksa");
+                    b.Property<DateTime>("DatumZakljucivanja");
 
-                    b.HasIndex("BrojIndeksa");
+                    b.Property<int>("PredlozenaOcena");
+
+                    b.Property<int>("ZakljucenaOcena");
+
+                    b.HasKey("SifraPredmeta", "JMBG");
+
+                    b.HasIndex("JMBG");
 
                     b.ToTable("Slusanja");
                 });
 
+            modelBuilder.Entity("NNProjekat.Models.TipAktivnosti", b =>
+                {
+                    b.Property<string>("SifraTipaAktivnosti");
+
+                    b.Property<string>("SifraPredmeta");
+
+                    b.Property<double>("MaxBrojPoena");
+
+                    b.Property<double>("MinBrojPoena");
+
+                    b.Property<string>("Naziv");
+
+                    b.Property<bool>("Obavezna");
+
+                    b.Property<double>("TezinskiKoeficijent");
+
+                    b.HasKey("SifraTipaAktivnosti", "SifraPredmeta");
+
+                    b.HasIndex("SifraPredmeta");
+
+                    b.ToTable("TipoviAktivnosti");
+                });
+
+            modelBuilder.Entity("NNProjekat.Models.Nastavnik", b =>
+                {
+                    b.HasBaseType("NNProjekat.Models.Osoba");
+
+                    b.Property<string>("Pozicija");
+
+                    b.ToTable("Nastavnik");
+
+                    b.HasDiscriminator().HasValue("nastavnik");
+                });
+
             modelBuilder.Entity("NNProjekat.Models.Student", b =>
                 {
-                    b.Property<string>("BrojIndeksa")
-                        .ValueGeneratedOnAdd();
+                    b.HasBaseType("NNProjekat.Models.Osoba");
 
-                    b.Property<string>("Ime");
+                    b.Property<string>("BrojIndeksa");
 
-                    b.Property<string>("Prezime");
+                    b.ToTable("Student");
 
-                    b.HasKey("BrojIndeksa");
-
-                    b.ToTable("Studenti");
+                    b.HasDiscriminator().HasValue("student");
                 });
 
             modelBuilder.Entity("NNProjekat.Models.Aktivnost", b =>
                 {
-                    b.HasOne("NNProjekat.Models.Predmet", "Predmet")
-                        .WithMany("Aktivnosti")
-                        .HasForeignKey("SifraPredmeta")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Ocena", b =>
-                {
-                    b.HasOne("NNProjekat.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("BrojIndeksa")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("NNProjekat.Models.Predmet", "Predmet")
-                        .WithMany()
-                        .HasForeignKey("SifraPredmeta")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NNProjekat.Models.Polagao", b =>
-                {
-                    b.HasOne("NNProjekat.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("BrojIndeksa")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("NNProjekat.Models.Nastavnik", "Nastavnik")
-                        .WithMany()
-                        .HasForeignKey("JMBG")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Aktivnosti")
+                        .HasForeignKey("NastavnikJMBG")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("NNProjekat.Models.Aktivnost", "Aktivnost")
+                    b.HasOne("NNProjekat.Models.Student", "Student")
+                        .WithMany("Aktivnosti")
+                        .HasForeignKey("StudentJMBG")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("NNProjekat.Models.TipAktivnosti", "TipAktivnosti")
                         .WithMany()
-                        .HasForeignKey("SifraAktivnosti", "SifraPredmeta")
+                        .HasForeignKey("SifraTipaAktivnosti", "SifraPredmeta")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -189,11 +167,19 @@ namespace NNProjekat.Migrations
                 {
                     b.HasOne("NNProjekat.Models.Student", "Student")
                         .WithMany()
-                        .HasForeignKey("BrojIndeksa")
+                        .HasForeignKey("JMBG")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("NNProjekat.Models.Predmet", "Predmet")
                         .WithMany()
+                        .HasForeignKey("SifraPredmeta")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NNProjekat.Models.TipAktivnosti", b =>
+                {
+                    b.HasOne("NNProjekat.Models.Predmet", "Predmet")
+                        .WithMany("TipoviAktivnosti")
                         .HasForeignKey("SifraPredmeta")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

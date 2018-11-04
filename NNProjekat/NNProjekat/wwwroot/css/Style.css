@@ -10,7 +10,28 @@
 }
 #LoginForm {
 }
+.prikazStudenta {
+    border-top: 1px #0091b5 solid;
+    border-left-color: #fff;
+    border-right-color: #fff;
+    border-bottom:1px solid #0091b5;
+}
+.list-group {
+    width: 90%;
+    margin: 0 auto;
+}
 
+.prikazStudentaOcena {
+    border-top: 1px solid #0091b5;
+    border-left-color: #0091b5;
+    border-right-color: #0091b5;
+    border-bottom:1px solid #0091b5;
+}
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+}
 .form-heading {
     color: #fff;
     font-size: 23px;

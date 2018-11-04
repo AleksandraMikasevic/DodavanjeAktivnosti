@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NNProjekat.Data;
 using NNProjekat.Services;
+using Rotativa.AspNetCore;
 
 namespace NNProjekat
 {
@@ -26,13 +27,13 @@ namespace NNProjekat
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<NNProjekatDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("NNProjekat")));
-            services.AddScoped<IAktivnostData, SqlAktivnostData>();
+            services.AddDbContext<NNProjekatDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("projekat1DB")));
+            services.AddScoped<IAktivnostiData, SqlAktivnostiData>();
             services.AddScoped<IPredmetData, SqlPredmetData>();
-            services.AddScoped<IPolaganjaData, SqlPolaganjaData>();
+            services.AddScoped<ITipAktivnostiData, SqlTipAktivnostiData>();
             services.AddScoped<IStudentData, SqlStudentData>();
             services.AddScoped<INastavnikData, SqlNastavnikData>();
-
+            services.AddScoped<ISlusanjaData, SqlSlusanjaData>();
             services.AddMvc().AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver
@@ -53,6 +54,7 @@ Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             app.UseStaticFiles();
             app.UseNodeModules(env.ContentRootPath);
             app.UseMvc(ConfigureRoutes);
+            RotativaConfiguration.Setup(env);
         }
 
         private void ConfigureRoutes(IRouteBuilder obj)

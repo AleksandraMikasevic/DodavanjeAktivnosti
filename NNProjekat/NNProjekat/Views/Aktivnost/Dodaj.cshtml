@@ -1,0 +1,128 @@
+﻿@model AktivnostDodaj
+@{
+    ViewBag.Title = "Dodavanje aktivnosti";
+}
+
+
+
+<div class="forma">
+    <div class="main-div">
+        <div class="panel">
+            <h2>Unos aktivnosti</h2>
+            <p>Unesite informacije o aktivnosti</p>
+        </div>
+        <form method="post" asp-action="DodajPost" asp-controller="Aktivnost">
+            <div class="form-group">
+                <label asp-for="NastavnikJMBG">Nastavnik</label>
+                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.NastavnikJMBG></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentJMBG">Student</label>
+                <select id ="studenti" asp-for="StudentJMBG" class="form-control" onchange="PromenaStudenta()" asp-items="@(new SelectList(Model.Studenti, "JMBG","BrojIndeksa"))" value=@Model.StudentJMBG></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SifraTipaAktivnosti"></label>
+                <select id="aktivnosti" name="SifraTipaAktivnosti" asp-for="SifraTipaAktivnosti" class="form-control" asp-items="@(new SelectList(Model.TipoviAktivnosti, "SifraTipaAktivnosti","Naziv"))" value=@Model.SifraTipaAktivnosti></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SifraPredmeta"></label>
+                <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="PromenaPredmeta()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojPoena"></label>
+                <input asp-for="BrojPoena" placeholder="Broj poena" class="form-control" type="text" name="BrojPoena" value="" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Datum"></label>
+                <input asp-for="Datum" id="datepicker" placeholder="Datum" class="form-control" type="text" name="Datum" value="" />
+            </div>
+            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
+    });
+
+
+    function PromenaPredmeta() {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#aktivnosti").html(procemessage).show();
+        var url = "/Predmet/VratiTipoveAktivnostiZaCB/";
+        var _sifraPredmeta =$('#predmeti').find(":selected").val();;
+        $.ajax({
+            url: "/Predmet/VratiTipoveAktivnostiZaCB/"+ _sifraPredmeta,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#aktivnosti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#studenti").html(procemessage).show();
+        var _sifraPredmeta = $('#predmeti').find(":selected").val();;
+        $.ajax({
+            url: "/Predmet/VratiStudenteZaCb/" + _sifraPredmeta,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite studenta</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#studenti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+    function PromenaPredmeta() {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#predmeti").html(procemessage).show();
+        var _jmbg = $('#studenti').find(":selected").val();;
+        $.ajax({
+            url: "/Student/VratiPredmeteZaCB/" + _jmbg,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#predmeti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#aktivnosti").html(procemessage).show();
+        var url = "/Predmet/VratiTipoveAktivnostiZaCB/";
+        var _sifraPredmeta = $('#predmeti').find(":selected").val();;
+        $.ajax({
+            url: "/Predmet/VratiTipoveAktivnostiZaCB/" + _sifraPredmeta,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#aktivnosti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>

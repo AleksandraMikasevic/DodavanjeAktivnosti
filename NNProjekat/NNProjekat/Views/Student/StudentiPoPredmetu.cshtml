@@ -12,6 +12,7 @@
     <table id="predmetTabela" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
         <thead>
             <tr>
+                <th><div>JMBG</div></th>
                 <th><div>BrojIndeksa</div></th>
                 <th><div>Ime</div></th>
                 <th><div>Prezime</div></th>
@@ -55,17 +56,18 @@
                 "orderable": false
             }],
             "columns": [
+                { "data": "Student.JMBG", "name": "JMBG", "autoWidth": true },
                 { "data": "Student.BrojIndeksa", "name": "BrojIndeksa", "autoWidth": true },
                 { "data": "Student.Ime", "name": "Ime", "autoWidth": true },
                 { "data": "Student.Prezime", "name": "Prezime", "autoWidth": true },
 
                 {
 
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Polagao/Dodaj/' + '@Html.Raw(Model.SifraPredmeta)' + '/' + "undefined" + '/' + "undefined" + '/' + full.BrojIndeksa + '">Dodaj</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Aktivnost/Dodaj/' + '@Html.Raw(Model.SifraPredmeta)' + '/' + "undefined" + '/' + "undefined" + '/' + full.JMBG + '">Dodaj</a>'; }
                 },
                 {
 
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Polagao/PolaganjaPoStudentu/'+'@Html.Raw(Model.SifraPredmeta)'+'/' + full.BrojIndeksa + '">Prikazi</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Aktivnost/AktivnostiPoStudentu/'+'@Html.Raw(Model.SifraPredmeta)'+'/' + full.JMBG + '">Prikazi</a>'; }
                 }
             ]
 

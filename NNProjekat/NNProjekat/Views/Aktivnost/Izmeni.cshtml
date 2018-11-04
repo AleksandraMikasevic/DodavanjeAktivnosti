@@ -1,0 +1,89 @@
+﻿@model AktivnostDodaj
+@{
+    ViewBag.Title = "Izmena aktivnosti";
+}
+
+
+
+<div class="forma">
+    <div class="main-div">
+        <div class="panel">
+            <h2>Izmena aktivnosti</h2>
+            <p>Unesite nove informacije o aktivnosti</p>
+        </div>
+        <form method="post" asp-action="IzmeniPost" asp-controller="Aktivnost">
+            <div class="form-group">
+                <label asp-for="NastavnikJMBG">Nastavnik</label>
+                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.NastavnikJMBG></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentJMBG">Student</label>
+                <select asp-for="StudentJMBG" class="form-control" asp-items="@(new SelectList(Model.Studenti, "JMBG","BrojIndeksa"))" value=@Model.StudentJMBG></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SifraTipaAktivnosti"></label>
+                <select id="aktivnosti" name="SifraTipaAktivnosti" asp-for="SifraTipaAktivnosti" class="form-control" asp-items="@(new SelectList(Model.TipoviAktivnosti, "SifraTipaAktivnosti","Naziv"))" value=@Model.SifraTipaAktivnosti></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SifraPredmeta"></label>
+                <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="UbaciAktivnosti()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojPoena"></label>
+                <input asp-for="BrojPoena" placeholder="Broj poena" class="form-control" type="text" name="BrojPoena" value="" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Datum"></label>
+                <input asp-for="Datum" id="datepicker" placeholder="Datum" class="form-control" type="text" name="Datum" value="" />
+            </div>
+            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
+    });
+
+
+    function UbaciAktivnosti() {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#aktivnosti").html(procemessage).show();
+        var url = "/Predmet/VratiTipoveAktivnostiZaCB/";
+        var _sifraPredmeta =$('#predmeti').find(":selected").val();;
+        $.ajax({
+            url: "/Predmet/VratiTipoveAktivnostiZaCB/"+ _sifraPredmeta,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#aktivnosti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+        $("#studenti").html(procemessage).show();
+        var url = "/Predmet/VratiStudenteZaCB/";
+        var _sifraPredmeta = $('#predmeti').find(":selected").val();;
+        $.ajax({
+            url: "/Predmet/VratiTipoveAktivnostiZaCB/" + _sifraPredmeta,
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#aktivnosti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>

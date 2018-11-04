@@ -31,7 +31,7 @@ namespace NNProjekat.Services
 
         public Predmet Vrati(string sifraPredmeta)
         {
-            return _context.Predmeti.Include(p => p.Aktivnosti).FirstOrDefault(r => r.SifraPredmeta == sifraPredmeta);
+            return _context.Predmeti.Include(p => p.TipoviAktivnosti).FirstOrDefault(r => r.SifraPredmeta == sifraPredmeta);
         }
     }
 }

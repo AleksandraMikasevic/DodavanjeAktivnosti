@@ -10,6 +10,6 @@ namespace NNProjekat.Models
         public string SifraPredmeta { get; set; }
         public string Naziv { get; set; }
         public int BrojESPB { get; set; }
-        public IEnumerable<Aktivnost> Aktivnosti { get; set; }
+        public IEnumerable<TipAktivnosti> TipoviAktivnosti { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace NNProjekat.Services
 
         public IEnumerable<Slusa> UcitajSvePoPredmetu(string id)
         {
-            return _context.Slusanja.Include(p => p.Student).Include(p => p.Predmet).Where(p => p.SifraPredmeta==id).OrderBy(p => p.BrojIndeksa);
+            return _context.Slusanja.Include(p => p.Student).Include(p => p.Student).Include(p => p.Predmet).Where(p => p.SifraPredmeta==id).OrderBy(p => p.JMBG);
         }
 
         public Student Vrati(string brojIndeksa)
