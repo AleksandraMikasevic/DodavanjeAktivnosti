@@ -1,7 +1,59 @@
-﻿
+﻿@model AktivnostIzmeni
 @{
-    ViewData["Title"] = "Izbrisi";
+    ViewBag.Title = "Brisanje aktivnosti";
 }
+<div class="forma">
+    <div class="main-div">
+        <div class="panel">
+            <h2>Brisanje aktivnosti</h2>
+        </div>
+        <form method="post" asp-action="IzbrisiPost" asp-controller="Aktivnost">
 
-<h2>Izbrisi</h2>
-
+            <div class="form-group">
+                <label asp-for="SifraPredmeta">Šifra predmeta</label>
+                <input asp-for="SifraPredmeta" readonly="readonly" placeholder="SifraPredmeta" class="form-control" type="text" name="SifraPredmeta" value=@Model.SifraPredmeta />
+            </div>
+            <div class="form-group">
+                <label>Naziv predmeta</label>
+                <input readonly="readonly" placeholder="NazivPredmeta" class="form-control" type="text" name="NazivPredmeta" value='@Model.TipAktivnosti.Predmet.Naziv' />
+            </div>
+            <div class="form-group">
+                <label asp-for="SifraTipaAktivnosti">Šifra tipa aktivnosti</label>
+                <input asp-for="SifraTipaAktivnosti" readonly="readonly" placeholder="SifraTipaAktivnosti" class="form-control" type="text" name="SifraTipaAktivnosti" value=@Model.SifraTipaAktivnosti />
+            </div>
+            <div class="form-group">
+                <label>Naziv tipa aktivnosti</label>
+                <input readonly="readonly" placeholder="NazivTipaAktivnosti" class="form-control" type="text" name="NazivTipaAktivnosti" value=@Model.TipAktivnosti.Naziv />
+            </div>
+            <div class="form-group">
+                <label asp-for="NastavnikJMBG">JMBG nastavnika</label>
+                <input asp-for="NastavnikJMBG" readonly="readonly" placeholder="NastavnikJMBG" class="form-control" type="text" name="NastavnikJMBG" value=@Model.NastavnikJMBG />
+            </div>
+            <div class="form-group">
+                <label>Ime i prezime nastavnika</label>
+                <input readonly="readonly" placeholder="ImePrezimeNastavnika" class="form-control" type="text" name="ImePrezimeNastavnika" value='@Model.IzabraniNastavnik.Ime @Model.IzabraniNastavnik.Prezime' />
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentJMBG">JMBG studenta</label>
+                <input asp-for="StudentJMBG" readonly="readonly" placeholder="StudentJMBG" class="form-control" type="text" name="StudentJMBG" value=@Model.StudentJMBG />
+            </div>
+            <div class="form-group">
+                <label>Broj indeksa</label>
+                <input readonly="readonly" placeholder="BrojIndeksa" class="form-control" type="text" name="BrojIndeksa" value=@Model.IzabraniStudent.BrojIndeksa />
+            </div>
+            <div class="form-group">
+                <label>Ime i prezime studenta</label>
+                <input readonly="readonly" placeholder="ImePrezimeStudenta" class="form-control" type="text" name="ImePrezimeStudenta" value='@Model.IzabraniStudent.Ime @Model.IzabraniStudent.Prezime' />
+            </div>
+            <div class="form-group">
+                <label asp-for="Datum">Datum</label>
+                <input asp-for="Datum" readonly="readonly" placeholder="Datum" class="form-control" type="text" name="Datum" value=@Model.Datum />
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojPoena">Broj poena</label>
+                <input asp-for="BrojPoena" placeholder="Broj poena" class="form-control" type="text" name="BrojPoena" value=@Model.BrojPoena />
+            </div>
+            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
+        </form>
+    </div>
+</div>

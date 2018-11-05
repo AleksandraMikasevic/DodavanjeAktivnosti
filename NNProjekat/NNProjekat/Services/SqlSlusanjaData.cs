@@ -42,7 +42,7 @@ namespace NNProjekat.Services
             {
                 foreach (Aktivnost aktivnost in aktivnostiStudenta)
                 {
-                    if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti && aktivnost.Status == true)
+                    if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti && aktivnost.Status == true && aktivnost.Validna == true)
                     {
                         if (tipAktivnosti.Obavezna == true && aktivnost.Status == false) {
                             return 5;
@@ -112,31 +112,35 @@ namespace NNProjekat.Services
             {
                 foreach (Aktivnost aktivnost in aktivnostiStudenta)
                 {
-                    if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti && aktivnost.Status == true)
+                    Console.WriteLine("STATUS "+aktivnost.Status);
+                    if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti)
                     {
                         if (tipAktivnosti.Obavezna == true && aktivnost.Status == false)
                         {
                             return 5;
                         }
-                        if (tipAktivnosti.Naziv == "Kolokvijum 1")
+                        if (aktivnost.Status == true)
                         {
-                            poeni1 = poeni1 + aktivnost.BrojPoena;
-                        }
-                        if (tipAktivnosti.Naziv == "Kolokvijum 2")
-                        {
-                            poeni1 = poeni1 + aktivnost.BrojPoena;
-                        }
-                        if (tipAktivnosti.Naziv == "Pisani deo ispita")
-                        {
-                            poeni1 = poeni1 + aktivnost.BrojPoena;
-                        }
-                        if (tipAktivnosti.Naziv == "Seminarski rad")
-                        {
-                            poeni2 = poeni2 + aktivnost.BrojPoena;
-                        }
-                        if (tipAktivnosti.Naziv == "Usmeni deo ispita")
-                        {
-                            poeni2 = poeni2 + aktivnost.BrojPoena;
+                            if (tipAktivnosti.Naziv == "Kolokvijum 1")
+                            {
+                                poeni1 = poeni1 + aktivnost.BrojPoena;
+                            }
+                            if (tipAktivnosti.Naziv == "Kolokvijum 2")
+                            {
+                                poeni1 = poeni1 + aktivnost.BrojPoena;
+                            }
+                            if (tipAktivnosti.Naziv == "Pisani deo ispita")
+                            {
+                                poeni1 = poeni1 + aktivnost.BrojPoena;
+                            }
+                            if (tipAktivnosti.Naziv == "Seminarski rad")
+                            {
+                                poeni2 = poeni2 + aktivnost.BrojPoena;
+                            }
+                            if (tipAktivnosti.Naziv == "Usmeni deo ispita")
+                            {
+                                poeni2 = poeni2 + aktivnost.BrojPoena;
+                            }
                         }
                     }
                 }

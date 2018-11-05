@@ -114,7 +114,10 @@ namespace NNProjekat.Controllers
         public IActionResult VratiTipoveAktivnostiZaCB(string id)
         {
             IEnumerable<TipAktivnosti> tipoviAktivnosti = new List<TipAktivnosti>();
-            tipoviAktivnosti = _predmetData.Vrati(id).TipoviAktivnosti;
+            if (!id.Equals("0"))
+            {
+                tipoviAktivnosti = _predmetData.Vrati(id).TipoviAktivnosti;
+            }
             SelectList aktivnostiSel = new SelectList(tipoviAktivnosti, "SifraTipaAktivnosti", "Naziv", 0);
             return Json(aktivnostiSel);
         }
@@ -129,6 +132,11 @@ namespace NNProjekat.Controllers
 
             SelectList studentiSel = new SelectList(studenti, "JMBG", "BrojIndeksa", 0);
             return Json(studentiSel);
+        }
+
+        public IActionResult VizuelniPrikaz()
+        {
+            return View();
         }
     }
 }

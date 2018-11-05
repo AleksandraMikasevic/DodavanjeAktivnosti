@@ -9,6 +9,6 @@ namespace NNProjekat.Services
     public interface INastavnikData
     {
         IEnumerable<Nastavnik> UcitajSve();
-
+        Nastavnik Vrati(string jMBG);
     }
 }

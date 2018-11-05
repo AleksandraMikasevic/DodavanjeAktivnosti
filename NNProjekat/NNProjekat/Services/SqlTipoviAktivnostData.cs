@@ -28,6 +28,9 @@ namespace NNProjekat.Services
             return _context.TipoviAktivnosti.Include(a => a.Predmet).Where(a=> a.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
         }
 
-
+        public TipAktivnosti VratiTip(string sifraPredmeta, string sifraTipaAktivnosti)
+        {
+            return _context.TipoviAktivnosti.Include(ta => ta.Predmet).FirstOrDefault(ta => ta.SifraPredmeta == sifraPredmeta && ta.SifraTipaAktivnosti == sifraTipaAktivnosti);
+        }
     }
 }

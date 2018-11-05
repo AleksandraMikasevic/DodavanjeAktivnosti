@@ -148,7 +148,7 @@ namespace NNProjekat.Controllers
         {
             StudentPrikazStudenta model = new StudentPrikazStudenta();
             model.Slusa = _slusanjaData.Vrati(JMBG, sifraPredmeta);
-            model.AktivnostiStudenta = _aktivnostiData.UcitajSvePoStudentuIPredmetu(JMBG, sifraPredmeta);
+            model.AktivnostiStudenta = _aktivnostiData.UcitajSvePoStudentuIPredmetuPrikaz(JMBG, sifraPredmeta);
             return View("PrikazStudenta", model);
         }
         [Route("/Student/PDF/{JMBG}/{SifraPredmeta}")]

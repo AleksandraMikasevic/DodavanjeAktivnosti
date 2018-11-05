@@ -19,5 +19,10 @@ namespace NNProjekat.Services
         {
             return _context.Nastavnici.OrderBy(n => n.Prezime);
         }
+
+        public Nastavnik Vrati(string jMBG)
+        {
+            return _context.Nastavnici.FirstOrDefault(n => n.JMBG == jMBG);
+        }
     }
 }

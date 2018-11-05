@@ -1,10 +1,7 @@
-﻿@model AktivnostDodaj
+﻿@model AktivnostIzmeni
 @{
     ViewBag.Title = "Izmena aktivnosti";
 }
-
-
-
 <div class="forma">
     <div class="main-div">
         <div class="panel">
@@ -12,78 +9,52 @@
             <p>Unesite nove informacije o aktivnosti</p>
         </div>
         <form method="post" asp-action="IzmeniPost" asp-controller="Aktivnost">
-            <div class="form-group">
-                <label asp-for="NastavnikJMBG">Nastavnik</label>
-                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.NastavnikJMBG></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="StudentJMBG">Student</label>
-                <select asp-for="StudentJMBG" class="form-control" asp-items="@(new SelectList(Model.Studenti, "JMBG","BrojIndeksa"))" value=@Model.StudentJMBG></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SifraTipaAktivnosti"></label>
-                <select id="aktivnosti" name="SifraTipaAktivnosti" asp-for="SifraTipaAktivnosti" class="form-control" asp-items="@(new SelectList(Model.TipoviAktivnosti, "SifraTipaAktivnosti","Naziv"))" value=@Model.SifraTipaAktivnosti></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SifraPredmeta"></label>
-                <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="UbaciAktivnosti()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
 
+            <div class="form-group">
+                <label asp-for="SifraPredmeta">Šifra predmeta</label>
+                <input asp-for="SifraPredmeta" readonly="readonly" placeholder="SifraPredmeta" class="form-control" type="text" name="SifraPredmeta" value=@Model.SifraPredmeta />
             </div>
             <div class="form-group">
-                <label asp-for="BrojPoena"></label>
-                <input asp-for="BrojPoena" placeholder="Broj poena" class="form-control" type="text" name="BrojPoena" value="" />
+                <label>Naziv predmeta</label>
+                <input readonly="readonly" placeholder="NazivPredmeta" class="form-control" type="text" name="NazivPredmeta" value='@Model.TipAktivnosti.Predmet.Naziv' />
             </div>
             <div class="form-group">
-                <label asp-for="Datum"></label>
-                <input asp-for="Datum" id="datepicker" placeholder="Datum" class="form-control" type="text" name="Datum" value="" />
+                <label asp-for="SifraTipaAktivnosti">Šifra tipa aktivnosti</label>
+                <input asp-for="SifraTipaAktivnosti" readonly="readonly" placeholder="SifraTipaAktivnosti" class="form-control" type="text" name="SifraTipaAktivnosti" value=@Model.SifraTipaAktivnosti />
+            </div>
+            <div class="form-group">
+                <label>Naziv tipa aktivnosti</label>
+                <input readonly="readonly" placeholder="NazivTipaAktivnosti" class="form-control" type="text" name="NazivTipaAktivnosti" value=@Model.TipAktivnosti.Naziv />
+            </div>
+            <div class="form-group">
+                <label asp-for="NastavnikJMBG">JMBG nastavnika</label>
+                <input asp-for="NastavnikJMBG" readonly="readonly" placeholder="NastavnikJMBG" class="form-control" type="text" name="NastavnikJMBG" value=@Model.NastavnikJMBG />
+            </div>
+            <div class="form-group">
+                <label>Ime i prezime nastavnika</label>
+                <input readonly="readonly" placeholder="ImePrezimeNastavnika" class="form-control" type="text" name="ImePrezimeNastavnika" value='@Model.IzabraniNastavnik.Ime @Model.IzabraniNastavnik.Prezime' />
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentJMBG">JMBG studenta</label>
+                <input asp-for="StudentJMBG" readonly="readonly" placeholder="StudentJMBG" class="form-control" type="text" name="StudentJMBG" value=@Model.StudentJMBG />
+            </div>
+            <div class="form-group">
+                <label>Broj indeksa</label>
+                <input readonly="readonly" placeholder="BrojIndeksa" class="form-control" type="text" name="BrojIndeksa" value=@Model.IzabraniStudent.BrojIndeksa />
+            </div>
+            <div class="form-group">
+                <label>Ime i prezime studenta</label>
+                <input readonly="readonly" placeholder="ImePrezimeStudenta" class="form-control" type="text" name="ImePrezimeStudenta" value='@Model.IzabraniStudent.Ime @Model.IzabraniStudent.Prezime' />
+            </div>
+            <div class="form-group">
+                <label asp-for="Datum">Datum</label>
+                <input asp-for="Datum" readonly="readonly" placeholder="Datum" class="form-control" type="text" name="Datum" value=@Model.Datum />
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojPoena">Broj poena</label>
+                <input asp-for="BrojPoena" placeholder="Broj poena" class="form-control" type="text" name="BrojPoena" value=@Model.BrojPoena />
             </div>
             <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
         </form>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $("#datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
-    });
-
-
-    function UbaciAktivnosti() {
-        var procemessage = "<option value='0'> Please wait...</option>";
-        $("#aktivnosti").html(procemessage).show();
-        var url = "/Predmet/VratiTipoveAktivnostiZaCB/";
-        var _sifraPredmeta =$('#predmeti').find(":selected").val();;
-        $.ajax({
-            url: "/Predmet/VratiTipoveAktivnostiZaCB/"+ _sifraPredmeta,
-            cache: false,
-            type: "POST",
-            success: function (data) {
-                var markup = "<option value='0'>Izaberite aktivnost</option>";
-                for (var x = 0; x < data.length; x++) {
-                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
-                }
-                $("#aktivnosti").html(markup).show();
-            },
-            error: function (reponse) {
-                alert("error : " + reponse);
-            }
-        });
-        $("#studenti").html(procemessage).show();
-        var url = "/Predmet/VratiStudenteZaCB/";
-        var _sifraPredmeta = $('#predmeti').find(":selected").val();;
-        $.ajax({
-            url: "/Predmet/VratiTipoveAktivnostiZaCB/" + _sifraPredmeta,
-            cache: false,
-            type: "POST",
-            success: function (data) {
-                var markup = "<option value='0'>Izaberite aktivnost</option>";
-                for (var x = 0; x < data.length; x++) {
-                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
-                }
-                $("#aktivnosti").html(markup).show();
-            },
-            error: function (reponse) {
-                alert("error : " + reponse);
-            }
-        });
-    }
-</script>

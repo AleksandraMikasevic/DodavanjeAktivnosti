@@ -10,5 +10,7 @@ namespace NNProjekat.Services
     {
         IEnumerable<TipAktivnosti> UcitajSvePoPredmetu(string sifraPredmeta);
         IEnumerable<TipAktivnosti> UcitajSve();
+        TipAktivnosti VratiTip(string sifraPredmeta, string sifraTipaAktivnosti);
+
     }
 }

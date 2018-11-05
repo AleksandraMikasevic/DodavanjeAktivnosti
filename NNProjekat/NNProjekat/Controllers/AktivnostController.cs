@@ -28,7 +28,7 @@ namespace NNProjekat.Controllers
             _slusanjaData = slusanjaData;
         }
 
-        [Route("/Aktivnost/Dodaj/{sifraPredmeta}/{sifraAktivnosti}/{JMBG}/{JMBGS}")]
+        [Route("/Aktivnost/Dodaj/{sifraPredmeta}/{sifraTipaAktivnosti}/{JMBG}/{JMBGS}")]
         [HttpGet]
         public IActionResult Dodaj(string sifraPredmeta, string sifraTipaAktivnosti, string JMBG, string JMBGS)
         {
@@ -41,16 +41,11 @@ namespace NNProjekat.Controllers
             if (JMBGS == null || JMBGS == "null")
             {
                 model.Predmeti = _predmetData.UcitajSve();
-
-                Console.WriteLine("JMBG JE "+JMBGS);
             }
             else
             {
-                Console.WriteLine(" ELSE JMBGS JE " + JMBGS);
-
                 model.Predmeti = VratiPredmeteZaCB(JMBGS);
             }
-            Console.WriteLine(model.Predmeti.ToList().Count + " SIFRA PReDMetAAAAAAAAAAAAAAA-------------");
             if (sifraPredmeta != "undefined")
             {
                 model.TipoviAktivnosti = _predmetData.Vrati(sifraPredmeta).TipoviAktivnosti;
@@ -59,12 +54,9 @@ namespace NNProjekat.Controllers
             {
                 model.TipoviAktivnosti = _tipAktivnostiData.UcitajSve();
             }
-            Console.WriteLine(model.Nastavnici.ToList().Count + "===============DUZINA LISTE");
             if (sifraPredmeta == null || sifraPredmeta == "null")
             {
                 model.Studenti = _studentData.UcitajSve();
-
-                Console.WriteLine("SIFRA PREDMETA JE NULL");
             }
             else
             {
@@ -79,19 +71,37 @@ namespace NNProjekat.Controllers
         public IActionResult DodajPost(AktivnostDodaj model)
         {
             Aktivnost aktivnost = new Aktivnost();
-            Console.WriteLine(model.BrojPoena + "BROJ POENAAAAAAAAAAAA");
-            Console.WriteLine(model.NastavnikJMBG + "Jmbggggggggggggggggggggggggggggggggg");
             aktivnost.StudentJMBG = model.StudentJMBG;
             aktivnost.NastavnikJMBG = model.NastavnikJMBG;
-            Console.WriteLine("Sifra tipa aktivnosti ================ " + model.SifraTipaAktivnosti);
             aktivnost.SifraTipaAktivnosti = model.SifraTipaAktivnosti;
             aktivnost.SifraPredmeta = model.SifraPredmeta;
             aktivnost.BrojPoena = model.BrojPoena;
-            Console.WriteLine(model.Datum + " -**********************************-MODEL __________________ DATUM");
             aktivnost.Datum = model.Datum;
-            aktivnost.Status = true;
+            aktivnost.TipAktivnosti = _tipAktivnostiData.VratiTip(model.SifraPredmeta, model.SifraTipaAktivnosti);
+            List<Aktivnost> aktivnosti = _aktivnostData.Ucitaj(model.StudentJMBG, model.SifraPredmeta, model.SifraTipaAktivnosti).ToList();
+            foreach (Aktivnost aktivnost1 in aktivnosti) {
+                aktivnost1.Validna = false;
+                _aktivnostData.Izbrisi(aktivnost1);
+            }
+            if (aktivnost.TipAktivnosti.Obavezna == true)
+            {
+                Console.WriteLine("obavezna je true");
+                if (model.BrojPoena >= aktivnost.TipAktivnosti.MaxBrojPoena * 0.5)
+                {
+                    Console.WriteLine("br poena true");
+                    aktivnost.Status = true;
+                }
+                else
+                {
+                    Console.WriteLine("br poena false");
+                    aktivnost.Status = false;
+                }
+            }
+            else {
+                aktivnost.Status = true;
+            }
+            aktivnost.Validna = true;
             _aktivnostData.Dodaj(aktivnost);
-            Console.WriteLine("SIFRA PREDMETAAAA: " + model.SifraPredmeta);
             _slusanjaData.IzracunajOcenu(model.StudentJMBG, model.SifraPredmeta, _aktivnostData.UcitajSvePoStudentuIPredmetu(model.StudentJMBG, model.SifraPredmeta));
             return RedirectToAction("SviPredmeti", "Predmet");
         }
@@ -102,9 +112,6 @@ namespace NNProjekat.Controllers
             AktivnostiPoStudentu model = new AktivnostiPoStudentu();
             model.JMBG = JMBG;
             model.SifraPredmeta = sifraPredmeta;
-            Console.WriteLine("Aktivnosti po studentu get");
-            Console.WriteLine(JMBG + "- JMBG");
-            Console.WriteLine(sifraPredmeta + "- sifra predmeta");
             return View(model);
         }
 
@@ -112,7 +119,6 @@ namespace NNProjekat.Controllers
         [HttpPost]
         public IActionResult VratiAktivnosti(string sifraPredmeta, string JMBGS)
         {
-            Console.WriteLine("VRATI POLAGANJAAAAAAAAAAAA------------------------------------------1");
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
             var length = Request.Form["length"].FirstOrDefault();
@@ -122,7 +128,6 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-            Console.WriteLine("VRATI POLAGANJAAAAAAAAAAAA------------------------------------------2");
 
             var model = _aktivnostData.Vrati(sifraPredmeta, JMBGS);
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
@@ -140,7 +145,6 @@ namespace NNProjekat.Controllers
 
             if (!string.IsNullOrEmpty(searchValue))
             {
-                Console.WriteLine("SEARCH VALUEEE--------------------------------------" + searchValue);
                 model = model.Where(m => m.Student.JMBG.StartsWith(
                     searchValue, true, null));
             }
@@ -152,6 +156,14 @@ namespace NNProjekat.Controllers
         public IActionResult SveAktivnosti()
         {
             var model = _aktivnostData.UcitajSve();
+            foreach (Aktivnost aktivnost in model) {
+                Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
+
+                Console.WriteLine("ZALJUCENA OCENA" + slusa.ZakljucenaOcena);
+                if (slusa.ZakljucenaOcena != null) {
+                    model.ToList().Remove(aktivnost);
+                }
+            }
             return View(model);
         }
 
@@ -159,7 +171,6 @@ namespace NNProjekat.Controllers
         [HttpPost]
         public IActionResult SveAktivnostiPost()
         {
-            Console.WriteLine("VRATI POLAGANJAAAAAAAAAAAA------------------------------------------1");
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
             var length = Request.Form["length"].FirstOrDefault();
@@ -169,9 +180,20 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-            Console.WriteLine("VRATI POLAGANJAAAAAAAAAAAA------------------------------------------2");
 
-            var model = _aktivnostData.UcitajSve();
+            var model = _aktivnostData.UcitajSveValidne();
+            foreach (Aktivnost aktivnost in model)
+            {
+
+                Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
+                Console.WriteLine("ZALJUCENA OCENA" +slusa.ZakljucenaOcena);
+
+                if (slusa.ZakljucenaOcena != null)
+                {
+                    model.ToList().Remove(aktivnost);
+                }
+            }    
+            
             /* if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
              {
                  var sortProperty = typeof(Aktivnost).GetProperty(sortColumn);
@@ -187,7 +209,6 @@ namespace NNProjekat.Controllers
 
             if (!string.IsNullOrEmpty(searchValue))
             {
-                Console.WriteLine("SEARCH VALUEEE--------------------------------------" + searchValue);
                 model = model.Where(m => m.Student.JMBG.StartsWith(
                     searchValue, true, null));
             }
@@ -199,13 +220,13 @@ namespace NNProjekat.Controllers
         [Route("/Aktivnost/Izmeni/{StudentJMBG}/{SifraPredmeta}/{SifraTipaAktivnosti}/{Datum}/{NastavnikJMBG}")]
         public IActionResult Izmeni()
         {
+
             var model = _aktivnostData.UcitajSve();
             return View(model);
         }
 
         public List<Predmet> VratiPredmeteZaCB(string id)
         {
-            Console.WriteLine("JMBG JE "+id);
             IEnumerable<Slusa> slusanja = new List<Slusa>();
             slusanja = _slusanjaData.UcitajSve(id);
             List<Predmet> predmeti = new List<Predmet>();
@@ -213,7 +234,6 @@ namespace NNProjekat.Controllers
             {
                 predmeti.Add(slusa.Predmet);
             }
-            Console.WriteLine("DUZINA PREDMETA JE :"+predmeti.Count);
             return predmeti;
         }
         public List<Student> VratiStudenteZaCB(string id)
@@ -228,7 +248,97 @@ namespace NNProjekat.Controllers
             return studenti;
         }
 
+
+        [Route("/Aktivnost/Izmena/{JMBG}/{JMBGS}/{sifraPredmeta}/{sifraTipaAktivnosti}/{datum}/{brojPoena}")]
+        [HttpGet]
+        public IActionResult Izmena(string JMBG, string JMBGS, string sifraPredmeta, string sifraTipaAktivnosti, string datum, string brojPoena)
+        {
+            AktivnostIzmeni model = new AktivnostIzmeni();
+            model.SifraTipaAktivnosti = sifraTipaAktivnosti;
+            model.SifraPredmeta = sifraPredmeta;
+            model.StudentJMBG = JMBGS;
+            model.NastavnikJMBG = JMBG;
+            model.IzabraniNastavnik = _nastavnikData.Vrati(JMBG);
+            model.IzabraniStudent = _studentData.VratiPoJMBG(JMBGS);
+            model.TipAktivnosti = _tipAktivnostiData.VratiTip(sifraPredmeta, sifraTipaAktivnosti);
+            model.Datum = DateTime.Parse(datum);
+            model.BrojPoena = Int32.Parse(brojPoena);
+            return View("Izmeni", model);
+        }
+
+        [Route("/Aktivnost/IzmeniPost")]
+        [HttpPost]
+        public IActionResult IzmeniPost(AktivnostIzmeni model)
+        {
+            Aktivnost aktivnost = new Aktivnost();
+            aktivnost.StudentJMBG = model.StudentJMBG;
+            aktivnost.NastavnikJMBG = model.NastavnikJMBG;
+            aktivnost.SifraTipaAktivnosti = model.SifraTipaAktivnosti;
+            aktivnost.SifraPredmeta = model.SifraPredmeta;
+            aktivnost.BrojPoena = model.BrojPoena;
+            aktivnost.Datum = model.Datum;
+            aktivnost.TipAktivnosti = _tipAktivnostiData.VratiTip(model.SifraPredmeta, model.SifraTipaAktivnosti);
+            if (aktivnost.TipAktivnosti.Obavezna == true)
+            {
+                if (model.BrojPoena >= aktivnost.TipAktivnosti.MaxBrojPoena * 0.5)
+                    aktivnost.Status = true;
+                else
+                    aktivnost.Status = false;
+            }
+            else
+            {
+                aktivnost.Status = true;
+            }
+            aktivnost.Validna = true;
+            _aktivnostData.Izmeni(aktivnost);
+            _slusanjaData.IzracunajOcenu(model.StudentJMBG, model.SifraPredmeta, _aktivnostData.UcitajSvePoStudentuIPredmetu(model.StudentJMBG, model.SifraPredmeta));
+            return RedirectToAction("SveAktivnosti");
+        }
+
+        [Route("/Aktivnost/Izbrisi/{JMBG}/{JMBGS}/{sifraPredmeta}/{sifraTipaAktivnosti}/{datum}/{brojPoena}")]
+        [HttpGet]
+        public IActionResult Izbrisi(string JMBG, string JMBGS, string sifraPredmeta, string sifraTipaAktivnosti, string datum, string brojPoena)
+        {
+            AktivnostIzmeni model = new AktivnostIzmeni();
+            model.SifraTipaAktivnosti = sifraTipaAktivnosti;
+            model.SifraPredmeta = sifraPredmeta;
+            model.StudentJMBG = JMBGS;
+            model.NastavnikJMBG = JMBG;
+            model.IzabraniNastavnik = _nastavnikData.Vrati(JMBG);
+            model.IzabraniStudent = _studentData.VratiPoJMBG(JMBGS);
+            model.TipAktivnosti = _tipAktivnostiData.VratiTip(sifraPredmeta, sifraTipaAktivnosti);
+            model.Datum = DateTime.Parse(datum);
+            model.BrojPoena = Int32.Parse(brojPoena);
+            return View("Izbrisi", model);
+        }
+
+        [Route("/Aktivnost/IzbrisiPost")]
+        [HttpPost]
+        public IActionResult IzbrisiPost(AktivnostIzmeni model)
+        {
+            Aktivnost aktivnost = new Aktivnost();
+            aktivnost.StudentJMBG = model.StudentJMBG;
+            aktivnost.NastavnikJMBG = model.NastavnikJMBG;
+            aktivnost.SifraTipaAktivnosti = model.SifraTipaAktivnosti;
+            aktivnost.SifraPredmeta = model.SifraPredmeta;
+            aktivnost.BrojPoena = model.BrojPoena;
+            aktivnost.Datum = model.Datum;
+            aktivnost.TipAktivnosti = _tipAktivnostiData.VratiTip(model.SifraPredmeta, model.SifraTipaAktivnosti);
+            if (aktivnost.TipAktivnosti.Obavezna == true)
+            {
+                if (model.BrojPoena >= aktivnost.TipAktivnosti.MaxBrojPoena * 0.5)
+                    aktivnost.Status = true;
+                else
+                    aktivnost.Status = false;
+            }
+            else
+            {
+                aktivnost.Status = true;
+            }
+            aktivnost.Validna = false;
+            _aktivnostData.Izbrisi(aktivnost);
+            _slusanjaData.IzracunajOcenu(model.StudentJMBG, model.SifraPredmeta, _aktivnostData.UcitajSvePoStudentuIPredmetu(model.StudentJMBG, model.SifraPredmeta));
+            return RedirectToAction("SveAktivnosti");
+        }
     }
-
-
 }

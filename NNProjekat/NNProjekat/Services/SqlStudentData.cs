@@ -39,6 +39,9 @@ namespace NNProjekat.Services
             return _context.Studenti.FirstOrDefault(r => r.BrojIndeksa == brojIndeksa);
         }
 
-   
+        public Student VratiPoJMBG(string jMBGS)
+        {
+            return _context.Studenti.FirstOrDefault(r => r.JMBG == jMBGS);
+        }
     }
 }

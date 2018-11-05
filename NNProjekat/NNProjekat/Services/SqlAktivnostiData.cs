@@ -23,9 +23,26 @@ namespace NNProjekat.Services
             return aktivnost;
         }
 
+        public Aktivnost Izbrisi(Aktivnost aktivnost)
+        {
+            _context.Aktivnosti.Update(aktivnost);
+            _context.SaveChanges();
+            return aktivnost;
+        }
+
         public Aktivnost Izmeni(Aktivnost aktivnost)
         {
-            throw new NotImplementedException();
+            _context.Aktivnosti.Update(aktivnost);
+            _context.SaveChanges();
+            return aktivnost;
+        }
+
+        public IEnumerable<Aktivnost> Ucitaj(string studentJMBG, string sifraPredmeta, string sifraTipaAktivnosti)
+        {
+            return _context.Aktivnosti.Include(p => p.TipAktivnosti)
+                .Include(p => p.Nastavnik).Include(p => p.Student).Include(p => p.TipAktivnosti)
+                .Where(p => p.Student.JMBG == studentJMBG).Where(p => p.SifraTipaAktivnosti == sifraTipaAktivnosti).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
+
         }
 
         public IEnumerable<Aktivnost> UcitajSve()
@@ -37,7 +54,20 @@ namespace NNProjekat.Services
         {
             return _context.Aktivnosti.Include(p => p.TipAktivnosti)
                 .Include(p => p.Nastavnik).Include(p => p.Student).Include(p => p.TipAktivnosti)
-                .Where(p => p.Student.JMBG== JMBGS).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
+                .Where(p => p.Student.JMBG == JMBGS).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
+        }
+
+        public IEnumerable<Aktivnost> UcitajSvePoStudentuIPredmetuPrikaz(string jMBG, string sifraPredmeta)
+        {
+            return _context.Aktivnosti.Include(p => p.TipAktivnosti)
+    .Include(p => p.Nastavnik).Include(p => p.Student).Include(p => p.TipAktivnosti)
+    .Where(p => p.Student.JMBG == jMBG).Where(p => p.SifraPredmeta == sifraPredmeta).Where(a => a.Validna == true).OrderBy(r => r.SifraPredmeta);
+
+        }
+
+        public IEnumerable<Aktivnost> UcitajSveValidne()
+        {
+            return _context.Aktivnosti.Include(p => p.TipAktivnosti).Include(p => p.Student).Include(p => p.Nastavnik).Include(p => p.TipAktivnosti.Predmet).Where(a => a.Validna == true);
         }
 
         public IEnumerable<Aktivnost> Vrati(string sifraPredmeta, string JMBGS)
@@ -46,5 +76,7 @@ namespace NNProjekat.Services
                 .Include(p => p.Nastavnik).Include(p => p.Student).Include(p => p.TipAktivnosti)
                 .Where(p => p.Student.JMBG == JMBGS).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
         }
+
+
     }
 }

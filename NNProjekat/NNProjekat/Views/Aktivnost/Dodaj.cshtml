@@ -13,21 +13,21 @@
         </div>
         <form method="post" asp-action="DodajPost" asp-controller="Aktivnost">
             <div class="form-group">
-                <label asp-for="NastavnikJMBG">Nastavnik</label>
-                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.NastavnikJMBG></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="StudentJMBG">Student</label>
-                <select id ="studenti" asp-for="StudentJMBG" class="form-control" onchange="PromenaStudenta()" asp-items="@(new SelectList(Model.Studenti, "JMBG","BrojIndeksa"))" value=@Model.StudentJMBG></select>
+                <label asp-for="SifraPredmeta"></label>
+                <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="PromenaPredmeta()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
+
             </div>
             <div class="form-group">
                 <label asp-for="SifraTipaAktivnosti"></label>
                 <select id="aktivnosti" name="SifraTipaAktivnosti" asp-for="SifraTipaAktivnosti" class="form-control" asp-items="@(new SelectList(Model.TipoviAktivnosti, "SifraTipaAktivnosti","Naziv"))" value=@Model.SifraTipaAktivnosti></select>
             </div>
             <div class="form-group">
-                <label asp-for="SifraPredmeta"></label>
-                <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="PromenaPredmeta()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
-
+                <label asp-for="NastavnikJMBG">Nastavnik</label>
+                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.NastavnikJMBG></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentJMBG">Student</label>
+                <select id="studenti" asp-for="StudentJMBG" class="form-control" asp-items="@(new SelectList(Model.Studenti, "JMBG","BrojIndeksa"))" value=@Model.StudentJMBG></select>
             </div>
             <div class="form-group">
                 <label asp-for="BrojPoena"></label>
@@ -51,13 +51,13 @@
         var procemessage = "<option value='0'> Please wait...</option>";
         $("#aktivnosti").html(procemessage).show();
         var url = "/Predmet/VratiTipoveAktivnostiZaCB/";
-        var _sifraPredmeta =$('#predmeti').find(":selected").val();;
+        var _sifraPredmeta = $('#predmeti').find(":selected").val();;
         $.ajax({
-            url: "/Predmet/VratiTipoveAktivnostiZaCB/"+ _sifraPredmeta,
+            url: "/Predmet/VratiTipoveAktivnostiZaCB/" + _sifraPredmeta,
             cache: false,
             type: "POST",
             success: function (data) {
-                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                var markup = "";
                 for (var x = 0; x < data.length; x++) {
                     markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
                 }
@@ -75,7 +75,7 @@
             cache: false,
             type: "POST",
             success: function (data) {
-                var markup = "<option value='0'>Izaberite studenta</option>";
+                var markup = "";
                 for (var x = 0; x < data.length; x++) {
                     markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
                 }
@@ -86,7 +86,7 @@
             }
         });
     }
-    function PromenaPredmeta() {
+    function PromenaStudenta() {
         var procemessage = "<option value='0'> Please wait...</option>";
         $("#predmeti").html(procemessage).show();
         var _jmbg = $('#studenti').find(":selected").val();;
@@ -95,7 +95,7 @@
             cache: false,
             type: "POST",
             success: function (data) {
-                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                var markup = "";
                 for (var x = 0; x < data.length; x++) {
                     markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
                 }
@@ -114,7 +114,7 @@
             cache: false,
             type: "POST",
             success: function (data) {
-                var markup = "<option value='0'>Izaberite aktivnost</option>";
+                var markup = "";
                 for (var x = 0; x < data.length; x++) {
                     markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
                 }

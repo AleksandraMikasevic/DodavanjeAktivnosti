@@ -16,7 +16,6 @@
                 <th><div>BrojIndeksa</div></th>
                 <th><div>Ime</div></th>
                 <th><div>Prezime</div></th>
-                <th><div>Dodaj</div></th>
                 <th><div>Prikaz</div></th>
             </tr>
         </thead>
@@ -60,11 +59,6 @@
                 { "data": "Student.BrojIndeksa", "name": "BrojIndeksa", "autoWidth": true },
                 { "data": "Student.Ime", "name": "Ime", "autoWidth": true },
                 { "data": "Student.Prezime", "name": "Prezime", "autoWidth": true },
-
-                {
-
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Aktivnost/Dodaj/' + '@Html.Raw(Model.SifraPredmeta)' + '/' + "undefined" + '/' + "undefined" + '/' + full.JMBG + '">Dodaj</a>'; }
-                },
                 {
 
                     "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Aktivnost/AktivnostiPoStudentu/'+'@Html.Raw(Model.SifraPredmeta)'+'/' + full.JMBG + '">Prikazi</a>'; }

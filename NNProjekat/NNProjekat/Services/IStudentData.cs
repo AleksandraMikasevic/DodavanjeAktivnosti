@@ -12,5 +12,6 @@ namespace NNProjekat.Services
         Student Vrati(string brojIndeksa);
         Student Dodaj(Student student);
         IEnumerable<Slusa> UcitajSvePoPredmetu(string id);
+        Student VratiPoJMBG(string jMBGS);
     }
 }
