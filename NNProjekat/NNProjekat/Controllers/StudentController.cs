@@ -58,8 +58,9 @@ namespace NNProjekat.Controllers
             int recordsTotal = 0;
             var model = _studentData.UcitajSve();
 
-            /*  if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
               {
+                Console.WriteLine("SORT COLUMN: "+sortColumn);
                   var sortProperty = typeof(Student).GetProperty(sortColumn);
                   if (sortColumnDirection == "asc")
                   {
@@ -69,7 +70,7 @@ namespace NNProjekat.Controllers
                   {
                       model = model.OrderByDescending(p => sortProperty.GetValue(p, null));
                   }
-              }*/
+              }
 
             if (!string.IsNullOrEmpty(searchValue))
             {

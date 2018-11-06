@@ -1,93 +1,80 @@
-﻿
+﻿@model PredmetGrafickiPrikaz
 @{
-    ViewBag.Title = "Predmeti";
+    var XLabels = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Ocene.Select(x => x.DataOcena).ToList());
+    var YValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Ocene.Select(x => x.BrojStudenata).ToList());
+    ViewBag.Title = "Graficki prikaz predmeta";
 }
+<br />
+<div class="list-group" style="width:90%; margin:0 auto;">
+    <div class="list-group-item">
+        @Model.Predmet.Naziv
+    </div>
+</div>
 
-<div id="programmatic_dashboard_div" style="border: 1px solid #ccc">
-    <table class="columns">
-        <tr>
-            <td>
-                <div id="programmatic_control_div" style="padding-left: 2em; min-width: 250px"></div>
-                <div>
-                    <button style="margin: 1em 1em 1em 2em" onclick="changeRange();">
-                        Select range [2, 5]
-                    </button><br />
-                    <button style="margin: 1em 1em 1em 2em" onclick="changeOptions();">
-                        Make the pie chart 3D
-                    </button>
-                </div>
-                <script type="text/javascript">
-                    function changeRange() {
-                        programmaticSlider.setState({ 'lowValue': 2, 'highValue': 5 });
-                        programmaticSlider.draw();
-                    }
+<div class="box-body">
 
-                    function changeOptions() {
-                        programmaticChart.setOption('is3D', true);
-                        programmaticChart.draw();
-                    }
-                </script>
-            </td>
-            <td>
-                <div id="programmatic_chart_div"></div>
-            </td>
-        </tr>
-    </table>
+    <div class="chart-container">
+        <canvas id="chart" style="width:100%; height:500px"></canvas>
+    </div>
 </div>
 <script type="text/javascript">
-    google.charts.load('current', { 'packages': ['corechart', 'controls'] });
-    google.charts.setOnLoadCallback(drawStuff);
 
-    function drawStuff() {
+        $(function () {
+    var chartName = "chart";
+        var ctx = document.getElementById(chartName).getContext('2d');
+        var data = {
+                labels: @Html.Raw(XLabels),
+                datasets: [{
+                    label: "Broj studenata",
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1,
+                    data: @Html.Raw(YValues)
+    }]
+            };
 
-        var dashboard = new google.visualization.Dashboard(
-            document.getElementById('programmatic_dashboard_div'));
+var options = {
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            beginAtZero: true
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(255,99,164,0.2)"
+                        }
+}],
+                    xAxes: [{
+                        ticks: {
+                            min: 0,
+                            beginAtZero: true
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                }
+            };
 
-        // We omit "var" so that programmaticSlider is visible to changeRange.
-        var programmaticSlider = new google.visualization.ControlWrapper({
-            'controlType': 'NumberRangeFilter',
-            'containerId': 'programmatic_control_div',
-            'options': {
-                'filterColumnLabel': 'Donuts eaten',
-                'ui': { 'labelStacking': 'vertical' }
-            }
+       var myChart = new  Chart(ctx, {
+                options: options,
+                data: data,
+                type:'bar'
+
+            });
         });
-
-        var programmaticChart = new google.visualization.ChartWrapper({
-            'chartType': 'PieChart',
-            'containerId': 'programmatic_chart_div',
-            'options': {
-                'width': 300,
-                'height': 300,
-                'legend': 'none',
-                'chartArea': { 'left': 15, 'top': 15, 'right': 0, 'bottom': 0 },
-                'pieSliceText': 'value'
-            }
-        });
-
-        var data = google.visualization.arrayToDataTable([
-            ['Name', 'Donuts eaten'],
-            ['Michael', 5],
-            ['Elisa', 7],
-            ['Robert', 3],
-            ['John', 2],
-            ['Jessica', 6],
-            ['Aaron', 1],
-            ['Margareth', 8]
-        ]);
-
-        dashboard.bind(programmaticSlider, programmaticChart);
-        dashboard.draw(data);
-
-        changeRange = function () {
-            programmaticSlider.setState({ 'lowValue': 2, 'highValue': 5 });
-            programmaticSlider.draw();
-        };
-
-        changeOptions = function () {
-            programmaticChart.setOption('is3D', true);
-            programmaticChart.draw();
-        };
-    }
-
-</script>
+</script>  

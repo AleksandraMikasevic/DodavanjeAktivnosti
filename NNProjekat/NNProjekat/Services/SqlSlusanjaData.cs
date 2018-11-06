@@ -211,7 +211,7 @@ namespace NNProjekat.Services
 
         public Slusa Vrati(string JMBG, string sifraPredmeta)
         {
-            return _context.Slusanja.Include(s => s.Predmet).Include(s => s.Student).Include(s => s.Predmet.TipoviAktivnosti).Where(r => r.JMBG == JMBG).Where(r => r.SifraPredmeta == sifraPredmeta).FirstOrDefault();
+            return _context.Slusanja.Include(s => s.Predmet).Include(s => s.Student).Include(s => s.Predmet.TipoviAktivnosti).Where(r => r.JMBG == JMBG && r.SifraPredmeta == sifraPredmeta).FirstOrDefault();
         }
 
         public void ZakljuciOcenu(string JMBG, string sifraPredmeta)

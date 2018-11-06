@@ -11,7 +11,7 @@
                 <th><div>BrojESPB</div></th>
                 <th><div>Aktivnosti</div></th>
                 <th><div>Studenti</div></th>
-
+                <th><div>Prikaz ocena</div></th>
             </tr>
         </thead>
     </table>
@@ -46,7 +46,7 @@
                 "datatype": "json"
             },
             "columnDefs": [{
-                "targets": [3,4],
+                "targets": [3,4,5],
                 "orderable": false
             }],
             "columns": [
@@ -55,11 +55,16 @@
                 { "data": "BrojESPB", "name": "BrojESPB", "autoWidth": true },
 
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Predmet/PrikazPredmeta/'+full.SifraPredmeta+'">Prikaz</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-search-plus btn btn-info" href="/Predmet/PrikazPredmeta/'+full.SifraPredmeta+'"></a>'; }
                 },
 
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Student/StudentiPoPredmetu/' + full.SifraPredmeta + '">Prikaz</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-search-plus btn btn-info" href="/Student/StudentiPoPredmetu/' + full.SifraPredmeta + '"></a>'; }
+                }
+                ,
+
+                {
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-search-plus btn btn-info" href="/Predmet/VizuelniPrikaz/' + full.SifraPredmeta + '"></a>'; }
                 }
             ]
 

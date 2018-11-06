@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NNProjekat.Models;
 using NNProjekat.Services;
+using NNProjekat.ViewModels;
 
 namespace NNProjekat.Controllers
 {
@@ -43,6 +44,8 @@ namespace NNProjekat.Controllers
 
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
+                Console.WriteLine("prvoooooooooooooooooooooooooooooooo");
+                Console.WriteLine("sort column: "+sortColumn);
                 var sortProperty = typeof(Predmet).GetProperty(sortColumn);
                 if (sortColumnDirection == "asc")
                 {
@@ -122,21 +125,37 @@ namespace NNProjekat.Controllers
             return Json(aktivnostiSel);
         }
         [HttpPost]
-        public IActionResult VratiStudenteZaCb(string id) { 
+        public IActionResult VratiStudenteZaCb(string id)
+        {
             IEnumerable<Slusa> slusanja = new List<Slusa>();
-            slusanja = _slusanjaData.UcitajSveStudente(id);
+            slusanja = _slusanjaData.UcitajSveStudente(id).Where(s => s.ZakljucenaOcena == null);
             List<Student> studenti = new List<Student>();
-            foreach (Slusa slusa in slusanja) {
+            foreach (Slusa slusa in slusanja)
+            {
                 studenti.Add(slusa.Student);
             }
-
             SelectList studentiSel = new SelectList(studenti, "JMBG", "BrojIndeksa", 0);
             return Json(studentiSel);
         }
 
-        public IActionResult VizuelniPrikaz()
+        public IActionResult VizuelniPrikaz(string id)
         {
-            return View();
+            IEnumerable<Slusa> slusanja = _slusanjaData.UcitajSve();
+            slusanja = slusanja.Where(s => s.ZakljucenaOcena != null).Where(s => s.SifraPredmeta == id);
+            List<Ocena> ocene = new List<Ocena>();
+            ocene = ocene.ToList();
+            ocene.Add(new Ocena(6, slusanja.Count(s => s.ZakljucenaOcena == 6)));
+            ocene.Add(new Ocena(7, slusanja.Count(s => s.ZakljucenaOcena == 7)));
+            ocene.Add(new Ocena(8, slusanja.Count(s => s.ZakljucenaOcena == 8)));
+            ocene.Add(new Ocena(9, slusanja.Count(s => s.ZakljucenaOcena == 9)));
+            ocene.Add(new Ocena(10, slusanja.Count(s => s.ZakljucenaOcena == 10)));
+            PredmetGrafickiPrikaz predmetGrafickiPrikaz = new PredmetGrafickiPrikaz();
+            predmetGrafickiPrikaz.Predmet = _predmetData.Vrati(id);
+            predmetGrafickiPrikaz.Ocene = ocene;
+            var model = predmetGrafickiPrikaz;
+            return View(model);
         }
+
+
     }
 }

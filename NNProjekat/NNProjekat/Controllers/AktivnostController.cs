@@ -156,14 +156,20 @@ namespace NNProjekat.Controllers
         public IActionResult SveAktivnosti()
         {
             var model = _aktivnostData.UcitajSve();
-            foreach (Aktivnost aktivnost in model) {
+            List<Aktivnost> aktivnosti = model.ToList();
+          
+            for (int i = 0; i < aktivnosti.Count; i++) {
+                Aktivnost aktivnost = aktivnosti.ElementAt(i);
                 Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
 
                 Console.WriteLine("ZALJUCENA OCENA" + slusa.ZakljucenaOcena);
-                if (slusa.ZakljucenaOcena != null) {
-                    model.ToList().Remove(aktivnost);
+                if (slusa.ZakljucenaOcena != null)
+                {
+                    Console.WriteLine("ZALJUCENA OCENA" + slusa.ZakljucenaOcena);
+                    aktivnosti.Remove(aktivnost);
                 }
             }
+            model = aktivnosti;
             return View(model);
         }
 
@@ -180,19 +186,18 @@ namespace NNProjekat.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
-
-            var model = _aktivnostData.UcitajSveValidne();
-            foreach (Aktivnost aktivnost in model)
-            {
-
+            var model = _aktivnostData.UcitajSve();
+            foreach (Aktivnost aktivnost in model) {
                 Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
-                Console.WriteLine("ZALJUCENA OCENA" +slusa.ZakljucenaOcena);
-
                 if (slusa.ZakljucenaOcena != null)
                 {
-                    model.ToList().Remove(aktivnost);
+                    model = model.Where(m => m.StudentJMBG != aktivnost.StudentJMBG || m.NastavnikJMBG != aktivnost.NastavnikJMBG ||
+                    m.Datum != aktivnost.Datum || 
+                    m.SifraPredmeta != aktivnost.SifraPredmeta || 
+                    m.SifraTipaAktivnosti != aktivnost.SifraTipaAktivnosti);
                 }
-            }    
+               
+            }
             
             /* if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
              {
@@ -239,7 +244,7 @@ namespace NNProjekat.Controllers
         public List<Student> VratiStudenteZaCB(string id)
         {
             IEnumerable<Slusa> slusanja = new List<Slusa>();
-            slusanja = _studentData.UcitajSvePoPredmetu(id);
+            slusanja = _studentData.UcitajSvePoPredmetu(id).Where(s => s.ZakljucenaOcena == null);
             List<Student> studenti = new List<Student>();
             foreach (Slusa slusa in slusanja)
             {

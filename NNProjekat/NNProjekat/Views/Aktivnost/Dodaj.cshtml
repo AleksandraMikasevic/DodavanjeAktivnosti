@@ -43,6 +43,28 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('form').bootstrapValidator({
+            fields: {
+                Datum: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Morate izabrati datum.'
+                        }
+                    }
+                },
+                BrojPoena: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Morate uneti broj poena.'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
         $("#datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
     });
 
