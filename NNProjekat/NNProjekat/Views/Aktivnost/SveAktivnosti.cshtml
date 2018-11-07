@@ -23,13 +23,16 @@
                 <th><div>BrojIndeksa</div></th>
                 <th><div>Ime</div></th>
                 <th><div>Prezime</div></th>
+                <th><div>NazivPredmeta</div></th>
+                <th><div>NazivTipaAktivnosti</div></th>
+                <th><div>Datum</div></th>
             </tr>
         </tfoot>
     </table>
 </div>
 <script>
     $(document).ready(function () {
-        var table = $("#aktivnostTabela").DataTable({
+        var tabela = $("#aktivnostTabela").DataTable({
             "language": {
                 "search": "Pretraga",
                 "processing": "Obrada",
@@ -48,9 +51,9 @@
             },
             "destroy": true,
             "processing": true, // for show progress bar
-            "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
+            "dom": 'lrtip',
             "ajax": {
                 "url": "/Aktivnost/SveAktivnostiPost/",
                 "type": "POST",
@@ -86,16 +89,10 @@
             $(this).html('<input type="text" placeholder="Pretrazi ' + title + '" />');
         });
 
-        table.columns().every(function () {
+        tabela.columns().every(function () {
             var that = this;
-
-            $('input', this.footer()).on('keyup change', function () {
-                if (that.search() !== this.value) {
-                    that
-
-                        .search(this.value)
-                        .draw();
-                }
+            $(this.footer()).find('input').on('keyup change', function () {
+                    that.search(this.value).draw();
             });
         });
     });
