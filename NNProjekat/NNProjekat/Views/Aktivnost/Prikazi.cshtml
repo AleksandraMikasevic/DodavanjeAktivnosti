@@ -1,0 +1,62 @@
+﻿@model Aktivnost
+@{
+    ViewBag.Title = "Prikaz aktivnosti";
+}
+<br />
+<div class="list-group" style="width:90%; margin:0 auto;">
+    <div class="list-group-item">
+        @Model.Student.Ime  @Model.Student.Prezime/@Model.TipAktivnosti.Predmet.Naziv/@Model.TipAktivnosti.Naziv
+    </div>
+</div>
+<br />
+<ul class="list-group" style="width:90%; margin:0 auto;">
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Student</span>
+        <span>
+            @Model.Student.Ime @Model.Student.Prezime
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Broj indeksa</span>
+        <span>
+            @Model.Student.BrojIndeksa
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Predmet</span>
+        <span>
+            @Model.TipAktivnosti.Predmet.Naziv
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Šifra predmeta</span>
+        <span>
+            @Model.TipAktivnosti.Predmet.SifraPredmeta
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Tip aktivnosti</span>
+        <span>
+            @Model.TipAktivnosti.Naziv
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Šifra tipa aktivnosti</span>
+        <span>
+            @Model.TipAktivnosti.SifraTipaAktivnosti
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Nastavnik</span>
+        <span>
+            @Model.Nastavnik.Ime @Model.Nastavnik.Prezime
+        </span>
+    </li>
+    <li class="prikazStudenta list-group-item d-flex justify-content-between align-items-center">
+        <span>Broj poena</span>
+        <span>
+            @Model.BrojPoena
+        </span>
+    </li>
+</ul>
+

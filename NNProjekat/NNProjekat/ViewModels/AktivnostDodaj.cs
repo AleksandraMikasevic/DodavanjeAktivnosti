@@ -23,6 +23,7 @@ namespace NNProjekat.ViewModels
         public Nastavnik IzabraniNastavnik { get; set; }
         public Student IzabraniStudent { get; set; }
         public TipAktivnosti TipAktivnosti { get; set; }
+        public String Greska { get; set; }
 
     }
 }

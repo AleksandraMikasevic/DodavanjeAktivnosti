@@ -15,7 +15,7 @@
                 <th><div>BrojPoena</div></th>
                 <th><div></div></th>
                 <th><div></div></th>
-
+                <th><div></div></th>
             </tr>
         </thead>
         <tfoot>
@@ -80,7 +80,10 @@
                     "render": function (data, type, full, meta) { return '<a class="fa fa-cogs" href="/Aktivnost/Izmena/' + full.Nastavnik.JMBG + '/' + full.Student.JMBG + '/' + full.TipAktivnosti.Predmet.SifraPredmeta + '/' + full.SifraTipaAktivnosti + '/' + full.Datum + '/' + full.BrojPoena + '"></a>'; }
                 },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="fa fa-cogs" href="/Aktivnost/Izbrisi/' + full.Nastavnik.JMBG + '/' + full.Student.JMBG + '/' + full.TipAktivnosti.Predmet.SifraPredmeta + '/' + full.SifraTipaAktivnosti + '/' + full.Datum + '/' + full.BrojPoena + '"></a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-remove" href="/Aktivnost/Izbrisi/' + full.Nastavnik.JMBG + '/' + full.Student.JMBG + '/' + full.TipAktivnosti.Predmet.SifraPredmeta + '/' + full.SifraTipaAktivnosti + '/' + full.Datum + '/' + full.BrojPoena + '"></a>'; }
+                },
+                {
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-search-plus" href="/Aktivnost/Prikazi/' + full.Student.JMBG + '/' + full.TipAktivnosti.Predmet.SifraPredmeta + '/' + full.SifraTipaAktivnosti + '/' + full.Datum + '"></a>'; }
                 }
             ]
         });

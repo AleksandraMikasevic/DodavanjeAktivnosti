@@ -24,7 +24,7 @@ namespace NNProjekat.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Aktivnost>().HasKey(t => new { t.StudentJMBG, t.NastavnikJMBG, t.Datum, t.SifraTipaAktivnosti, t.SifraPredmeta });
+            builder.Entity<Aktivnost>().HasKey(t => new { t.StudentJMBG, t.Datum, t.SifraTipaAktivnosti, t.SifraPredmeta });
             builder.Entity<TipAktivnosti>().HasKey(t => new { t.SifraTipaAktivnosti, t.SifraPredmeta });
             builder.Entity<Osoba>().HasDiscriminator<string>("tip_osobe").HasValue<Student>("student").HasValue<Nastavnik>("nastavnik");
             builder.Entity<Osoba>().HasKey(t => new { t.JMBG });

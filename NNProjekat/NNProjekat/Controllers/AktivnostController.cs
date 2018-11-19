@@ -76,6 +76,7 @@ namespace NNProjekat.Controllers
             aktivnost.SifraTipaAktivnosti = model.SifraTipaAktivnosti;
             aktivnost.SifraPredmeta = model.SifraPredmeta;
             aktivnost.BrojPoena = model.BrojPoena;
+            
             aktivnost.Datum = model.Datum;
             aktivnost.TipAktivnosti = _tipAktivnostiData.VratiTip(model.SifraPredmeta, model.SifraTipaAktivnosti);
             List<Aktivnost> aktivnosti = _aktivnostData.Ucitaj(model.StudentJMBG, model.SifraPredmeta, model.SifraTipaAktivnosti).ToList();
@@ -339,6 +340,14 @@ namespace NNProjekat.Controllers
             _aktivnostData.Izbrisi(aktivnost);
             _slusanjaData.IzracunajOcenu(model.StudentJMBG, model.SifraPredmeta, _aktivnostData.UcitajSvePoStudentuIPredmetu(model.StudentJMBG, model.SifraPredmeta));
             return RedirectToAction("SveAktivnosti");
+        }
+        [Route("/Aktivnost/Prikazi/{JMBGS}/{sifraPredmeta}/{sifraTipaAktivnosti}/{datum}")]
+        [HttpGet]
+        public IActionResult Prikazi(string JMBGS, string sifraPredmeta, string sifraTipaAktivnosti, string datum)
+        {
+            DateTime datum1 = DateTime.Parse(datum);
+            var model = _aktivnostData.Vrati(JMBGS, sifraPredmeta, sifraTipaAktivnosti, datum1);
+            return View("Prikazi", model);
         }
     }
 }

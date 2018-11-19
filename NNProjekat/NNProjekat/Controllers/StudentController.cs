@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using NNProjekat.Models;
 using NNProjekat.Services;
 using NNProjekat.ViewModels;
-using Syncfusion.Pdf;
-using Syncfusion.Pdf.Graphics;
-using Syncfusion.Drawing;
-using System.IO;
-using Rotativa;
 using Rotativa.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore.Options;

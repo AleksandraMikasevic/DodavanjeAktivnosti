@@ -17,5 +17,6 @@ namespace NNProjekat.Services
         IEnumerable<Aktivnost> Ucitaj(string studentJMBG, string sifraPredmeta, string sifraTipaAktivnosti);
         IEnumerable<Aktivnost> UcitajSvePoStudentuIPredmetuPrikaz(string jMBG, string sifraPredmeta);
         IEnumerable<Aktivnost> UcitajSveValidne();
+        Aktivnost Vrati(string jMBGS, string sifraPredmeta, string sifraTipaAktivnosti, DateTime datum);
     }
 }

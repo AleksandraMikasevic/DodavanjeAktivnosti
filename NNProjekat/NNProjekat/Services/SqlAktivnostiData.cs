@@ -77,6 +77,10 @@ namespace NNProjekat.Services
                 .Where(p => p.Student.JMBG == JMBGS).Where(p => p.SifraPredmeta == sifraPredmeta).OrderBy(r => r.SifraPredmeta);
         }
 
-
+        public Aktivnost Vrati(string jMBGS, string sifraPredmeta, string sifraTipaAktivnosti, DateTime datum)
+        {
+            return _context.Aktivnosti.Include(a => a.Nastavnik).Include(a => a.Student).Include(a => a.TipAktivnosti).Include(a => a.TipAktivnosti.Predmet)
+                .Where(a => a.StudentJMBG == jMBGS && a.SifraTipaAktivnosti == sifraTipaAktivnosti && a.SifraPredmeta == sifraPredmeta && a.Datum == datum).FirstOrDefault();
+        }
     }
 }
