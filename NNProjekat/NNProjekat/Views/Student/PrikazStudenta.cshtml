@@ -2,6 +2,14 @@
 @{
     ViewBag.Title = "Prikaz studenta";
 }
+@{
+    var parms = new Dictionary<string, string>
+{
+{ "JMBG", Model.Slusa.JMBG },
+{ "sifraPredmeta", Model.Slusa.SifraPredmeta }
+};
+}
+
 <br />
 <div class="list-group" style="width:90%; margin:0 auto;">
     <div class="list-group-item">
@@ -56,10 +64,31 @@
 
         else
         {
-            <span>Zaljučena ocena</span>
+            <span>Zaključena ocena</span>
             <span>@Model.Slusa.ZakljucenaOcena</span>
+            <span>
+                <a href="/Student/IzbrisiZakljucenuOcenu/@Model.Slusa.JMBG/@Model.Slusa.SifraPredmeta">
+                    <i class="fa fa-remove" style="font-size:24px"></i>
+                </a>
+            </span>
         }
     </div>
+    <div class="prikazStudentaOcena list-group-item  d-flex justify-content-between align-items-center">
+        @if (Model.Slusa.ZakljucenaOcena == null)
+        {
+            <span>Izaberi ocenu za zaključivanje: </span>
+            <form id="formaZak" method="post" asp-all-route-data=parms asp-action="ZakljuciOcenuPromena" asp-controller="Student">
+                <div class="form-row">
+                    <input placeholder="Ocena" class="form-control" type="text" name="Ocena" value="" />
+                    <a id="SumLink" href="#">
+                        <i class="fa fa-check" style="font-size:24px"></i>
+                    </a>
+                </div>
+
+            </form>
+        }
+    </div>
+
 </div>
 <br />
 
@@ -72,3 +101,8 @@
     Html.EndForm();
 
 }
+<script>
+    document.getElementById("SumLink").onclick = function () {
+        document.getElementById("formaZak").submit();
+    }
+</script>

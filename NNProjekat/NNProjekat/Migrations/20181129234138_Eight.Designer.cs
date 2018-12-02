@@ -12,9 +12,10 @@ using System;
 namespace NNProjekat.Migrations
 {
     [DbContext(typeof(NNProjekatDbContext))]
-    partial class NNProjekatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181129234138_Eight")]
+    partial class Eight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,6 +135,8 @@ namespace NNProjekat.Migrations
                     b.Property<string>("Lozinka");
 
                     b.Property<string>("Pozicija");
+
+                    b.Property<bool>("Zapamti");
 
                     b.ToTable("Nastavnik");
 

@@ -23,11 +23,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="NastavnikJMBG">Nastavnik</label>
-                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici,"JMBG","JMBG"))" value=@Model.NastavnikJMBG></select>
+                <select asp-for="NastavnikJMBG" placeholder="Nastavnik" class="form-control" asp-items="@(new SelectList(Model.Nastavnici.Select(s => new { Text = s.Ime+" "+s.Prezime, JMBG = s.JMBG}),"JMBG","Text"))" value=@Model.NastavnikJMBG></select>
             </div>
             <div class="form-group">
                 <label asp-for="StudentJMBG">Student</label>
-                <select id="studenti" asp-for="StudentJMBG" class="form-control" asp-items="@(new SelectList(Model.Studenti, "JMBG","BrojIndeksa"))" value=@Model.StudentJMBG></select>
+                <select id="studenti" asp-for="StudentJMBG" class="form-control" asp-items="@(new SelectList(Model.Studenti.Select(s=> new {Text = s.Ime+" "+s.Prezime+"-"+s.BrojIndeksa, JMBG= s.JMBG}), "JMBG","Text"))" value=@Model.StudentJMBG></select>
             </div>
             <div class="form-group">
                 <label asp-for="BrojPoena"></label>
@@ -67,7 +67,6 @@
     $(document).ready(function () {
         $("#datepicker").datepicker({ dateFormat: 'dd.mm.yy' });
     });
-
 
     function PromenaPredmeta() {
         var procemessage = "<option value='0'> Please wait...</option>";

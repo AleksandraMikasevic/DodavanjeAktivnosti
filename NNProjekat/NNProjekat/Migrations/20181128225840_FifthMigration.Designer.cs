@@ -12,9 +12,10 @@ using System;
 namespace NNProjekat.Migrations
 {
     [DbContext(typeof(NNProjekatDbContext))]
-    partial class NNProjekatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181128225840_FifthMigration")]
+    partial class FifthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,10 +129,6 @@ namespace NNProjekat.Migrations
             modelBuilder.Entity("NNProjekat.Models.Nastavnik", b =>
                 {
                     b.HasBaseType("NNProjekat.Models.Osoba");
-
-                    b.Property<string>("KorisnickoIme");
-
-                    b.Property<string>("Lozinka");
 
                     b.Property<string>("Pozicija");
 

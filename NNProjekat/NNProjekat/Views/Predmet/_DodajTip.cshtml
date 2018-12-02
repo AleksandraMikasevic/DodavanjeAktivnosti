@@ -1,0 +1,13 @@
+﻿@model PredmetDodaj
+
+<section>
+    @{int i = Model.TipoviAktivnosti.Count}
+    <div class="form-group">
+        <label asp-for="TipoviAktivnosti[i].SifraTipaAktivnosti"></label>
+        <input asp-for="TipoviAktivnosti[i].SifraTipaAktivnosti" placeholder="Sifra predmeta" class="form-control" type="text" name="SifraTipaAktivnosti" value="" />
+    </div>
+    <div class="form-group">
+        <label asp-for="TipoviAktivnosti[i].Naziv"></label>
+        <input asp-for="TipoviAktivnosti[i].Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="" />
+    </div>
+</section>

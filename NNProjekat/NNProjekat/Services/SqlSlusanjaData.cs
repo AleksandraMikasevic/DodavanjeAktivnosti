@@ -18,12 +18,13 @@ namespace NNProjekat.Services
         }
         public void IzracunajOcenu(string JMBG, string sifraPredmeta, IEnumerable<Aktivnost> aktivnostiStudenta)
         {
-            Slusa slusanja = _context.Slusanja.Include(s => s.Predmet).Include(s => s.Predmet.TipoviAktivnosti).Include(s=>s.Student).Where(s => s.Predmet.SifraPredmeta == sifraPredmeta).Where(s => s.Student.JMBG == JMBG).FirstOrDefault();
-            Console.WriteLine(slusanja.Predmet.Naziv+"              SLUSANJA");
+            Slusa slusanja = _context.Slusanja.Include(s => s.Predmet).Include(s => s.Predmet.TipoviAktivnosti).Include(s => s.Student).Where(s => s.Predmet.SifraPredmeta == sifraPredmeta).Where(s => s.Student.JMBG == JMBG).FirstOrDefault();
+            Console.WriteLine(slusanja.Predmet.Naziv + "              SLUSANJA");
             int konacnaOcena = 0;
             if (slusanja.Predmet.Naziv == "Programiranje 1")
             {
                 konacnaOcena = ocenaProgramiranje1(slusanja, aktivnostiStudenta.ToList());
+                Console.WriteLine("KonacnaOcena " + konacnaOcena);
             }
             if (slusanja.Predmet.Naziv == "Upravljanje dokumentacijom")
             {
@@ -44,28 +45,29 @@ namespace NNProjekat.Services
                 {
                     if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti && aktivnost.Status == true && aktivnost.Validna == true)
                     {
-                        if (tipAktivnosti.Obavezna == true && aktivnost.Status == false) {
+                        if (tipAktivnosti.Obavezna == true && aktivnost.Status == false)
+                        {
                             return 5;
                         }
                         if (tipAktivnosti.Naziv == "Kolokvijum 1")
                         {
-                            poeni = poeni + aktivnost.BrojPoena*tipAktivnosti.TezinskiKoeficijent;
+                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
                         }
                         if (tipAktivnosti.Naziv == "Kolokvijum 2")
                         {
-                            poeni = poeni + aktivnost.BrojPoena*tipAktivnosti.TezinskiKoeficijent;
+                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
                         }
                         if (tipAktivnosti.Naziv == "Domaci zadatak")
                         {
-                            poeni = poeni + aktivnost.BrojPoena*tipAktivnosti.TezinskiKoeficijent;
+                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
                         }
                         if (tipAktivnosti.Naziv == "Aktivnost")
                         {
-                            poeni = poeni + aktivnost.BrojPoena*tipAktivnosti.TezinskiKoeficijent;
+                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
                         }
                         if (tipAktivnosti.Naziv == "Projekat")
                         {
-                            poeni = poeni + aktivnost.BrojPoena*tipAktivnosti.TezinskiKoeficijent;
+                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
                         }
                         if (tipAktivnosti.Naziv == "Seminarski rad")
                         {
@@ -102,7 +104,8 @@ namespace NNProjekat.Services
             return konacnaOcena;
         }
 
-        public int ocenaProgramiranje1(Slusa slusanja, List<Aktivnost> aktivnostiStudenta) {
+        public int ocenaProgramiranje1(Slusa slusanja, List<Aktivnost> aktivnostiStudenta)
+        {
             int konacnaOcena = 0;
             int ocena1 = 0;
             double poeni1 = 0;
@@ -112,15 +115,23 @@ namespace NNProjekat.Services
             {
                 foreach (Aktivnost aktivnost in aktivnostiStudenta)
                 {
-                    Console.WriteLine("STATUS "+aktivnost.Status);
+                    Console.WriteLine("STATUS " + aktivnost.Status);
+                    Console.WriteLine("STATUS " + aktivnost.Status);
+
                     if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti)
                     {
-                        if (tipAktivnosti.Obavezna == true && aktivnost.Status == false)
+                        if (aktivnost.Validna == true)
                         {
-                            return 5;
+                            if (tipAktivnosti.Obavezna == true && aktivnost.Status == false)
+                            {
+                                return 5;
+                            }
                         }
-                        if (aktivnost.Status == true)
+
+                        if (aktivnost.Status == true && aktivnost.Validna == true)
                         {
+                            Console.WriteLine(tipAktivnosti.Naziv + " tipaAktivnosti: " + aktivnost.BrojPoena);
+
                             if (tipAktivnosti.Naziv == "Kolokvijum 1")
                             {
                                 poeni1 = poeni1 + aktivnost.BrojPoena;
@@ -195,7 +206,7 @@ namespace NNProjekat.Services
                 ocena2 = 10;
             }
             konacnaOcena = (ocena1 + ocena2) / 2;
-
+            Console.WriteLine(konacnaOcena + " ocenaaaaa");
             return konacnaOcena;
         }
 
@@ -218,7 +229,7 @@ namespace NNProjekat.Services
         {
             Slusa slusanja = _context.Slusanja.Include(s => s.Predmet).Include(s => s.Predmet.TipoviAktivnosti).Include(s => s.Student).Where(s => s.Predmet.SifraPredmeta == sifraPredmeta).Where(s => s.Student.JMBG == JMBG).FirstOrDefault();
             slusanja.ZakljucenaOcena = slusanja.PredlozenaOcena;
-            slusanja.DatumZakljucivanja = new DateTime();
+            slusanja.DatumZakljucivanja = DateTime.Now;
             _context.Slusanja.Update(slusanja);
             _context.SaveChanges();
         }
@@ -226,6 +237,34 @@ namespace NNProjekat.Services
         public IEnumerable<Slusa> UcitajSveStudente(string sifraPredmeta)
         {
             return _context.Slusanja.Include(s => s.Student).Where(r => r.SifraPredmeta == sifraPredmeta);
+        }
+
+        public void Sacuvaj(Slusa slusa)
+        {
+            _context.Add(slusa);
+            _context.SaveChanges();
+        }
+
+        public void Izbrisi(Slusa slusa)
+        {
+            _context.Remove(slusa);
+            _context.SaveChanges();
+        }
+
+        public void ZakljuciOcenuPromena(string JMBG, string sifraPredmeta, string ocena)
+        {
+            Slusa slusanja = _context.Slusanja.Include(s => s.Predmet).Include(s => s.Predmet.TipoviAktivnosti).Include(s => s.Student).Where(s => s.Predmet.SifraPredmeta == sifraPredmeta).Where(s => s.Student.JMBG == JMBG).FirstOrDefault();
+            if (ocena == null)
+            {
+                slusanja.ZakljucenaOcena = null;
+                slusanja.DatumZakljucivanja = null;
+            }
+            else { slusanja.ZakljucenaOcena = Convert.ToInt32(ocena);
+                slusanja.DatumZakljucivanja = DateTime.Now;
+
+            }
+            _context.Slusanja.Update(slusanja);
+            _context.SaveChanges();
         }
     }
 }

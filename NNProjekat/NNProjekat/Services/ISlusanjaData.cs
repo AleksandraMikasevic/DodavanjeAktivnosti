@@ -14,5 +14,8 @@ namespace NNProjekat.Services
         Slusa Vrati(string JMBG, string sifraPredmeta);
         void IzracunajOcenu(string JMBG, string sifraPredmeta, IEnumerable<Aktivnost> aktivnostiStudenta);
         void ZakljuciOcenu(string JMBG, string sifraPredmeta);
+        void Sacuvaj(Slusa slusa);
+        void Izbrisi(Slusa slusa);
+        void ZakljuciOcenuPromena(string jMBG, string sifraPredmeta, string ocena);
     }
 }

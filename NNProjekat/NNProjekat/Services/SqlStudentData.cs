@@ -19,9 +19,22 @@ namespace NNProjekat.Services
 
         public Student Dodaj(Student student)
         {
-            _context.Add(student);
+            _context.Studenti.Add(student);
             _context.SaveChanges();
             return student;
+        }
+
+        public void Izbrisi(string JMBG)
+        {
+            Student student = _context.Studenti.Where(s => s.JMBG == JMBG).Single();
+            _context.Studenti.Remove(student);
+            _context.SaveChanges();
+        }
+
+        public void Izmeni(Student student)
+        {
+            _context.Studenti.Update(student);
+            _context.SaveChanges();
         }
 
         public IEnumerable<Student> UcitajSve()

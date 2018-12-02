@@ -12,9 +12,10 @@ using System;
 namespace NNProjekat.Migrations
 {
     [DbContext(typeof(NNProjekatDbContext))]
-    partial class NNProjekatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181119180744_FourthMigration")]
+    partial class FourthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,8 +26,6 @@ namespace NNProjekat.Migrations
                 {
                     b.Property<string>("StudentJMBG");
 
-                    b.Property<string>("NastavnikJMBG");
-
                     b.Property<DateTime>("Datum");
 
                     b.Property<string>("SifraTipaAktivnosti");
@@ -35,11 +34,13 @@ namespace NNProjekat.Migrations
 
                     b.Property<double>("BrojPoena");
 
+                    b.Property<string>("NastavnikJMBG");
+
                     b.Property<bool>("Status");
 
                     b.Property<bool>("Validna");
 
-                    b.HasKey("StudentJMBG", "NastavnikJMBG", "Datum", "SifraTipaAktivnosti", "SifraPredmeta");
+                    b.HasKey("StudentJMBG", "Datum", "SifraTipaAktivnosti", "SifraPredmeta");
 
                     b.HasIndex("NastavnikJMBG");
 
@@ -128,10 +129,6 @@ namespace NNProjekat.Migrations
             modelBuilder.Entity("NNProjekat.Models.Nastavnik", b =>
                 {
                     b.HasBaseType("NNProjekat.Models.Osoba");
-
-                    b.Property<string>("KorisnickoIme");
-
-                    b.Property<string>("Lozinka");
 
                     b.Property<string>("Pozicija");
 

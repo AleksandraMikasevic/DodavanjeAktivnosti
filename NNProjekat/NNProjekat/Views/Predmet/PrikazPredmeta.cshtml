@@ -21,10 +21,12 @@
             </tr>
         </thead>
     </table>
+    <button type="button"  onclick="tableActions()">klik</button>
 </div>
 <script>
+    var tabela;
     $(document).ready(function () {
-        $("#aktivnostTabela").DataTable({
+        tabela = $("#aktivnostTabela").DataTable({
             "language": {
                 "search": "Pretraga",
                 "processing": "Obrada",
@@ -67,7 +69,13 @@
             ]
 
         });
+
     });
+    function tableActions() {
+        alert(JSON.stringify(tabela.rows().data()));
+        // perform API operations with `table`
+        // ...
+    }
 </script>
 
 

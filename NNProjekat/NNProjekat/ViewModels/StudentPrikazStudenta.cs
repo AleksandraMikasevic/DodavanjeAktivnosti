@@ -10,5 +10,7 @@ namespace NNProjekat.ViewModels
     {
         public Slusa Slusa { get; set; }
         public IEnumerable<Aktivnost> AktivnostiStudenta { get; set; }
+        public String Nastavnik { get; set; }
+        public DateTime Datum { get; set; }
     }
 }

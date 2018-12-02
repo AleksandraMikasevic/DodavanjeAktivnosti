@@ -1,0 +1,146 @@
+﻿@model SlusanjeDodaj
+@{
+    ViewBag.Title = "Predmeti";
+}
+<br />
+<div class="list-group" style="width:90%; margin:0 auto;">
+    <div class="list-group-item">
+        @Model.Student.Ime @Model.Student.Prezime
+    </div>
+</div>
+<br />
+<form>
+    <div class="form-group">
+        <label>Sifra predmeta</label>
+        <select id="predmeti" class="form-control" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))"></select>
+    </div>
+    <button id="DodajPredmet" type="button" class="btn btn-primary" name="dodaj">Dodaj</button>
+</form>
+<div style="width:90%; margin:0 auto;">
+    <table id="predmetTabela" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th><div>Šifra predmeta</div></th>
+                <th><div>Naziv</div></th>
+                <th><div>BrojESPB</div></th>
+                <th><div></div></th>
+                <th><div></div></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script>
+    var t;
+    $(document).ready(function () {
+       t = $("#predmetTabela").DataTable({
+            "language": {
+                "search": "Pretraga",
+                "processing": "Obrada",
+                "paginate": {
+                    "first": "Prvi",
+                    "previous": "Prethodni",
+                    "next": "Sledeći",
+                    "last": "Poslednji"
+                },
+                "loadingRecords": "Učitavanje podataka",
+                "emptyTable": "Tabela je prazna",
+                "zeroRecords": "Tabela je prazna",
+                "info": "Prikazivanje _START_ do _END_ od _TOTAL_ predmeta",
+                "lengthMenu": "Prikaži _MENU_  predmeta"
+
+            },
+            "destroy": true,
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/Student/PredmetiStudent/"+@Html.Raw(Json.Serialize(Model.Student.JMBG)),
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [3],
+                "orderable": false
+            }],
+            "columns": [
+                { "data": "Predmet.SifraPredmeta", "name": "SifraPredmeta", "autoWidth": true },
+                { "data": "Predmet.Naziv", "name": "Naziv", "autoWidth": true },
+                { "data": "Predmet.BrojESPB", "name": "BrojESPB", "autoWidth": true },
+                {
+                    "render": function (data, type, full, meta) { return '<button id="IzbrisiSlusanje" type="button" id="IzbrisiSlusanje" onclick="IzbrisiPredmet(this)" class="fa fa-remove btn btn-info" >Dodaj</a>'; }
+                },
+                {
+                    "render": function (data, type, full, meta) {
+                        return '<a class="fa fa-info-circle btn btn-info" href="/Student/StudentPredmetAktivnosti/' +@Html.Raw(Json.Serialize(Model.Student.JMBG))+'/'+ full.SifraPredmeta + '"></a>';
+                    }
+                },
+            ]
+
+        });
+         $('#DodajPredmet').on('click', function () {
+                $.ajax({
+                    url: "/Student/DodajSlusanje/" + $("#predmeti").val() + "/" +@Html.Raw(Json.Serialize(Model.Student.JMBG)),
+                    type: 'GET',
+                    "datatype": "json",
+                    success: function () {
+                        t.ajax.reload();
+                        PromenaPredmeta();
+                    },
+                    error: function (jqxhr, status, exception) {
+                        alert('Exception:', exception.toString());
+                    }
+                });
+        });
+        $('#IzbrisiSlusanje').on('click', function () {
+                $.ajax({
+                    url: "/Student/IzbrisiSlusanje/" + $("#predmeti").val() + "/" +@Html.Raw(Json.Serialize(Model.Student.JMBG)),
+                    type: 'GET',
+                    "datatype": "json",
+                    success: function () {
+                        t.ajax.reload();
+                        PromenaPredmeta();
+                    },
+                    error: function (jqxhr, status, exception) {
+                        alert('Exception:', exception.toString());
+                    }
+                });
+        });
+
+    });
+    function IzbrisiPredmet(obj) {
+                        $.ajax({
+            url: "/Student/IzbrisiSlusanje/" + $(obj).closest('tr').find('td:first').html() + "/" +@Html.Raw(Json.Serialize(Model.Student.JMBG)),
+                    type: 'GET',
+                    "datatype": "json",
+                            success: function () {
+                                t.ajax.reload();
+                        PromenaPredmeta();
+                    },
+                    error: function (jqxhr, status, exception) {
+                        alert('Exception:', exception.toString());
+                    }
+                });
+    }
+
+    function PromenaPredmeta() {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#predmeti").html(procemessage).show();
+        var url = "/Predmet/VratiPreostalePredmete/";
+        $.ajax({
+            url: "/Student/VratiPreostalePredmete/"+@Html.Raw(Json.Serialize(Model.Student.JMBG)),
+            cache: false,
+            type: "get",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#predmeti").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>

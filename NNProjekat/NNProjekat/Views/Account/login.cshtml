@@ -1,0 +1,40 @@
+﻿@model AccountLogin
+@{
+    ViewBag.Title = "Prijava";
+}
+<form method="post" asp-controller="Account" asp-action="OnPostAsync">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    
+    <div class="form-group">
+        <label asp-for="@Model.Username" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="@Model.Username" class="form-control" />
+            <span asp-validation-for="@Model.Username" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.Password" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="@Model.Password" class="form-control" />
+            <span asp-validation-for="@Model.Password" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <label asp-for="RememberMe">
+                    <input asp-for="RememberMe" />
+                    @Html.DisplayNameFor(m => m.RememberMe)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Log In</button>
+        </div>
+    </div>
+</form>

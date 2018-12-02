@@ -1,4 +1,5 @@
 ﻿@model StudentPrikazStudenta
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     Layout = "~/Views/Shared/_Layout2.cshtml";
     ViewBag.Title = "Prikaz studenta";
@@ -10,6 +11,12 @@
     </div>
 </div>
 <br />
+<p>
+    @HttpContextAccessor.HttpContext.Session.GetString("nastavnik");
+</p>
+<p>
+    @Model.Datum.Day/@Model.Datum.Month/@Model.Datum.Year
+</p>
 <ul class="list-group" style="width:90%; margin:0 auto;">
     @for (var i = 0; i < Model.Slusa.Predmet.TipoviAktivnosti.ToList().Count; i++)
     {
@@ -51,7 +58,7 @@
 
         else
         {
-            <span>Zaljučena ocena</span>
+            <span>Zaključena ocena</span>
             <span style="float:right">@Model.Slusa.ZakljucenaOcena</span>
         }
     </div>

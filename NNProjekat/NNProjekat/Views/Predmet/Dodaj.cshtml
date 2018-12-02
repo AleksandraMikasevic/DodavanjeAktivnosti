@@ -1,0 +1,135 @@
+﻿@model PredmetDodaj
+@{
+    ViewData["Title"] = "Dodaj predmet";
+}
+
+<div class="forma">
+    <div class="main-div">
+        <div class="panel">
+            <h2>Unos studenta</h2>
+            <p>Unesite informacije o studentu</p>
+        </div>
+        <form method="post" asp-action="DodajPost" asp-controller="Aktivnost">
+
+            <div class="form-group">
+                <label asp-for="SifraPredmeta"></label>
+                <input asp-for="SifraPredmeta" placeholder="Sifra predmeta" class="form-control" type="text" name="SifraPredmeta" value="" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Naziv"></label>
+                <input asp-for="Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="" />
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojESPB"></label>
+                <input asp-for="BrojESPB" placeholder="BrojESPB" class="form-control" type="text" name="BrojESPB" value="" />
+            </div>
+            <button id="search">Search</button>
+            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj predmet</button>
+            @foreach (var TipAktivnosti in Model.TipoviAktivnosti)
+            {
+                @Html.Partial("_DodajTip", Model);
+            }
+        </form>
+    </div>
+</div>
+<script>
+    var url = '@Url.Action("Predmet", "DodajAktivnost")';
+$('#search').click(function() {
+  var keyWord = $('#Keyword').val();
+  $('#searchResults').load(url, { searchText: keyWord });
+})
+
+        /*
+        var t;
+        $(document).ready(function () {
+            t = $("#tipoviAktivnosti").DataTable({
+                dom: "Brtip",
+                // for disable multiple column at once
+                ajax: {
+                    "url": "/Predmet/VratiTipoveAktivnostiDodaj",
+                    "type": "GET",
+                    "datatype": "json",
+                    dataSrc: ''
+                },
+                "columns": [
+                    { "data": "SifraTipaAktivnosti", "name": "SifraTipaAktivnosti", "autoWidth": true },
+                    { "data": "Naziv", "name": "Naziv", "autoWidth": true },
+                    { "data": "MinBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
+                    { "data": "MaxBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
+                    { "data": "TezinskiKoeficijent", "name": "MinBrojPoena", "autoWidth": true },
+                    { "data": "Obavezna", "name": "Obavezna", "autoWidth": true }
+                ]
+            });
+            var counter = 1;
+
+            $('#dodajAktivnost').on('click', function () {
+                    $.ajax({
+                        url: "/Predmet/DodajAktivnost/" + document.getElementById("SifraTipaAktivnosti").value + "/"
+                            + document.getElementById("Naziv123").value + "/" +
+                            document.getElementById("MinBrojPoena").value +"/"+ document.getElementById("MaxBrojPoena").value + "/"+
+                            document.getElementById("TezinskiKoeficijent").value+"/"+"true",
+                        type: 'get',
+                        "datatype": "json",
+                        success: function (data) {
+                            alert(JSON.stringify(data["data"]));
+                            t.row.add(data["data"]).draw(false);
+                            $("#izbrisiAktivnost").prop('disabled', true);
+                            $("#izmeniAktivnost").prop('disabled', true);
+                        },
+                        error: function (jqxhr, status, exception) {
+                            alert('Exception:', exception.toString());
+                        }
+                    });
+
+                });
+
+
+
+            $('#tipoviAktivnosti tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    $("#izbrisiAktivnost").prop('disabled', true);
+                    $("#izmeniAktivnost").prop('disabled', true);
+                } else {
+                    t.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                    $("#izbrisiAktivnost").prop('disabled', false);
+                    $("#izmeniAktivnost").prop('disabled', false);
+                }
+            });
+
+            $('#izbrisiAktivnost').click(function () {
+
+                var selectedRow = t.cell('.selected', 1).data();
+                ;
+                alert(selectedRow);
+                $.ajax({
+                    url: "/NJProjekatFED/goods_received_note/remove_item/" + selectedRow,
+                    type: 'GET',
+                    success: function (data) {
+                        t.ajax.reload();
+                        document.getElementById("brojStavke").value = "";
+                        $("#izbrisiAktivnost").prop('disabled', true);
+                        $("#izmeniAktivnost").prop('disabled', true);
+                    },
+                    error: function (jqxhr, status, exception) {
+                        alert('Exception:', exception.toString());
+                    }
+                });
+            });
+            $('#izmeniAktivnost').click(function () {
+                var selectedRowKolicina = t.cell('.selected', 2).data();
+                var selectedRowMaterijal = t.cell('.selected', 3).data();
+                var selectedRowBrojStavke = t.cell('.selected', 1).data();
+                $("#SifraTipaAktivnosti").prop('disabled', true);
+                document.getElementById("kolicina").value = selectedRowKolicina;
+                document.getElementById("materijalID").value = selectedRowMaterijal;
+                document.getElementById("brojStavke").value = selectedRowBrojStavke;
+            });
+        });
+        function tableActions() {
+            alert(JSON.stringify(t.rows().data()));
+            // perform API operations with `table`
+            // ...
+        }*/
+</script>

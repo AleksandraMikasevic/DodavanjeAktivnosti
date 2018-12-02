@@ -10,5 +10,7 @@ namespace NNProjekat.Services
     {
         IEnumerable<Nastavnik> UcitajSve();
         Nastavnik Vrati(string jMBG);
+        bool ProveriNastavnika(string username, string password);
+        Nastavnik VratiPoUsername(string username);
     }
 }

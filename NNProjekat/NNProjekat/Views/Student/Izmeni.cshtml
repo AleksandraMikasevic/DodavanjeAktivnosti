@@ -1,0 +1,35 @@
+﻿@model Student
+@{
+    ViewBag.Title = "Izmena studenta";
+}
+
+
+
+<div class="forma">
+    <div class="main-div">
+        <div class="panel">
+            <h2>Izmena studenta</h2>
+            <p>Informacije nove o studentu</p>
+        </div>
+        <form method="post" asp-action="IzmeniPost" asp-controller="Student" asp-route-id="@Model.JMBG">
+
+            <div class="form-group">
+                <label asp-for="JMBG"></label>
+                <input disabled asp-for="JMBG" placeholder="JMBG" class="form-control" type="text" name="JMBG" value=@Model.JMBG />
+            </div>
+            <div class="form-group">
+                <label asp-for="Ime"></label>
+                <input asp-for="Ime" placeholder="Ime" class="form-control" type="text" name="Ime" value=@Model.Ime />
+            </div>
+            <div class="form-group">
+                <label asp-for="Prezime"></label>
+                <input asp-for="Prezime" placeholder="Prezime" class="form-control" type="text" name="Prezime" value=@Model.Prezime />
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojIndeksa"></label>
+                <input asp-for="BrojIndeksa" placeholder="BrojIndeksa" class="form-control" type="text" name="BrojIndeksa" value=@Model.BrojIndeksa />
+            </div>
+            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
+        </form>
+    </div>
+</div>

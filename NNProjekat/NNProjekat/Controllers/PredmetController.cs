@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -12,6 +14,7 @@ using NNProjekat.ViewModels;
 
 namespace NNProjekat.Controllers
 {
+    [Authorize]
     public class PredmetController : Controller
     {
         private IPredmetData _predmetData;
@@ -45,7 +48,7 @@ namespace NNProjekat.Controllers
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
                 Console.WriteLine("prvoooooooooooooooooooooooooooooooo");
-                Console.WriteLine("sort column: "+sortColumn);
+                Console.WriteLine("sort column: " + sortColumn);
                 var sortProperty = typeof(Predmet).GetProperty(sortColumn);
                 if (sortColumnDirection == "asc")
                 {
@@ -65,7 +68,7 @@ namespace NNProjekat.Controllers
             var data = model.Skip(skip).Take(pageSize).ToList();
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
-
+        
         public IActionResult PrikazPredmeta(string id)
         {
 
@@ -110,9 +113,68 @@ namespace NNProjekat.Controllers
             var data = model.Skip(skip).Take(pageSize).ToList();
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
+        public IActionResult Dodaj()
+        {
+            PredmetDodaj predmet = new PredmetDodaj();
+            return View(predmet);
+        }
+        [HttpGet]
+        public IActionResult VratiTipoveAktivnostiDodaj()
+        {
+            var model = new List<TipAktivnostiDodaj>();
+            return Json(new { data = model});
+        }
+       
+        /*
+       [HttpPost]
+        public IActionResult VratiTipoveAktivnostiDodaj(ISession session)
+        {
+            var predmetJson = session.GetString("predmet");
+            Predmet predmet = JsonConvert.DeserializeObject<Predmet>(predmetJson);
+            return Json(new { data = predmet.TipoviAktivnosti.ToList() });
+        }
+        
+        public IActionResult DodajPredmet(ISession session)
+        {
+            Predmet predmet = new Predmet();
+            session.SetString("predmet", JsonConvert.SerializeObject(predmet));
+            return View(predmet);
+        }
 
-
-
+        [HttpPost]
+        public IActionResult VratiTipoveAktivnostiIzmeni(String id)
+        {
+            var model = _predmetData.Vrati(id).TipoviAktivnosti;
+            var data = model.ToList();
+            return Json(new { data = data });
+        }
+        */
+        /*
+        [HttpPost]
+        public IActionResult DodajAktivnost(ISession session, TipAktivnosti tipAktivnosti)
+        {
+            var predmetJson = session.GetString("predmet");
+            Predmet predmet = JsonConvert.DeserializeObject<Predmet>(predmetJson);
+            predmet.TipoviAktivnosti.ToList().Add(tipAktivnosti);
+        }
+        [HttpPost]
+        public IActionResult IzmeniAktivnost(ISession session, TipAktivnosti tipAktivnosti)
+        {
+            HttpContext.Session.
+            var predmetJson = session.GetString("predmet");
+            Predmet predmet = JsonConvert.DeserializeObject<Predmet>(predmetJson);
+            TipAktivnosti ta = predmet.TipoviAktivnosti.ToList().Where(t => t.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti).Single();
+            ta = tipAktivnosti;
+        }
+        [HttpPost]
+        public IActionResult IzbrisiAktivnost(ISession session, String id)
+        {
+            var predmetJson = session.GetString("predmet");
+            Predmet predmet = JsonConvert.DeserializeObject<Predmet>(predmetJson);
+            TipAktivnosti ta = predmet.TipoviAktivnosti.ToList().Where(t => t.SifraTipaAktivnosti == id).Single();
+            predmet.TipoviAktivnosti.ToList().Remove(ta);
+        }
+        */
         [HttpPost]
         public IActionResult VratiTipoveAktivnostiZaCB(string id)
         {
@@ -134,16 +196,17 @@ namespace NNProjekat.Controllers
             {
                 studenti.Add(slusa.Student);
             }
-            SelectList studentiSel = new SelectList(studenti, "JMBG", "BrojIndeksa", 0);
+            SelectList studentiSel = new SelectList(studenti.Select(s => new {Text=s.Ime+" "+s.Prezime+"-"+s.BrojIndeksa, JMBG = s.JMBG }), "JMBG", "Text", 0);
             return Json(studentiSel);
         }
 
         public IActionResult VizuelniPrikaz(string id)
         {
             IEnumerable<Slusa> slusanja = _slusanjaData.UcitajSve();
-            slusanja = slusanja.Where(s => s.ZakljucenaOcena != null).Where(s => s.SifraPredmeta == id);
+            slusanja = slusanja.Where(s => s.ZakljucenaOcena != null || s.PredlozenaOcena == 5).Where(s => s.SifraPredmeta == id);
             List<Ocena> ocene = new List<Ocena>();
             ocene = ocene.ToList();
+            ocene.Add(new Ocena(5, slusanja.Count(s => s.PredlozenaOcena == 5)));
             ocene.Add(new Ocena(6, slusanja.Count(s => s.ZakljucenaOcena == 6)));
             ocene.Add(new Ocena(7, slusanja.Count(s => s.ZakljucenaOcena == 7)));
             ocene.Add(new Ocena(8, slusanja.Count(s => s.ZakljucenaOcena == 8)));

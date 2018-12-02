@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NNProjekat.Models;
 using NNProjekat.Services;
@@ -9,6 +10,7 @@ using NNProjekat.ViewModels;
 
 namespace NNProjekat.Controllers
 {
+    [Authorize]
     public class AktivnostController : Controller
     {
         private IAktivnostiData _aktivnostData;
@@ -70,6 +72,7 @@ namespace NNProjekat.Controllers
         [HttpPost]
         public IActionResult DodajPost(AktivnostDodaj model)
         {
+            
             Aktivnost aktivnost = new Aktivnost();
             aktivnost.StudentJMBG = model.StudentJMBG;
             aktivnost.NastavnikJMBG = model.NastavnikJMBG;
@@ -163,10 +166,8 @@ namespace NNProjekat.Controllers
                 Aktivnost aktivnost = aktivnosti.ElementAt(i);
                 Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
 
-                Console.WriteLine("ZALJUCENA OCENA" + slusa.ZakljucenaOcena);
                 if (slusa.ZakljucenaOcena != null)
                 {
-                    Console.WriteLine("ZALJUCENA OCENA" + slusa.ZakljucenaOcena);
                     aktivnosti.Remove(aktivnost);
                 }
             }

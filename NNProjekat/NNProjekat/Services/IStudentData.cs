@@ -1,4 +1,5 @@
 ﻿using NNProjekat.Models;
+using NNProjekat.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace NNProjekat.Services
         Student Dodaj(Student student);
         IEnumerable<Slusa> UcitajSvePoPredmetu(string id);
         Student VratiPoJMBG(string jMBGS);
+        void Izbrisi(string JMBG);
+        void Izmeni(Student student);
     }
 }

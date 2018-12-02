@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +20,7 @@ namespace NNProjekat
 {
     public class Startup
     {
+       
         private IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
@@ -28,6 +32,17 @@ namespace NNProjekat
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<NNProjekatDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("projekat1DB")));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+     .AddCookie(options => {
+         options.LoginPath = "/Account/Index/";
+     });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAktivnostiData, SqlAktivnostiData>();
             services.AddScoped<IPredmetData, SqlPredmetData>();
             services.AddScoped<ITipAktivnostiData, SqlTipAktivnostiData>();
@@ -41,7 +56,9 @@ namespace NNProjekat
                 options.SerializerSettings.ReferenceLoopHandling =
 Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
-            }); ;
+            });
+            services.AddSession();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +68,10 @@ Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
+            app.UseSession();
+            app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
             app.UseStaticFiles();
             app.UseNodeModules(env.ContentRootPath);
             app.UseMvc(ConfigureRoutes);
@@ -59,7 +80,7 @@ Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
         private void ConfigureRoutes(IRouteBuilder obj)
         {
-            obj.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+            obj.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}/{id1?}");
         }
     }
 }
