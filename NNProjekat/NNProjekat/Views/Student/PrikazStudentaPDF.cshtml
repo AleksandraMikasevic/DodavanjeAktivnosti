@@ -5,18 +5,23 @@
     ViewBag.Title = "Prikaz studenta";
 }
 <br />
+<div class="list-group">
+    <div class="prikazStudentaOcena list-group-item  d-flex justify-content-between align-items-center">
+        <span>
+            Izveštaj kreiran: @Model.Datum.Day/@Model.Datum.Month/@Model.Datum.Year
+        </span>
+        <span style="float:right">
+            Kreator izveštaja: @HttpContextAccessor.HttpContext.Session.GetString("nastavnik")
+        </span>
+    </div>
+</div><br />
+
 <div class="list-group" style="width:90%; margin:0 auto;">
     <div class="list-group-item">
         @Model.Slusa.Student.Ime  @Model.Slusa.Student.Prezime/@Model.Slusa.Predmet.Naziv
     </div>
 </div>
 <br />
-<p>
-    @HttpContextAccessor.HttpContext.Session.GetString("nastavnik");
-</p>
-<p>
-    @Model.Datum.Day/@Model.Datum.Month/@Model.Datum.Year
-</p>
 <ul class="list-group" style="width:90%; margin:0 auto;">
     @for (var i = 0; i < Model.Slusa.Predmet.TipoviAktivnosti.ToList().Count; i++)
     {

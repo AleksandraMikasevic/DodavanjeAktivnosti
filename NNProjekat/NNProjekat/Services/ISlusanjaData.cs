@@ -17,5 +17,6 @@ namespace NNProjekat.Services
         void Sacuvaj(Slusa slusa);
         void Izbrisi(Slusa slusa);
         void ZakljuciOcenuPromena(string jMBG, string sifraPredmeta, string ocena);
+        IEnumerable<Slusa> UcitajSveStudenteIzmedjuDatuma(string id, string datumOd, string datumDo);
     }
 }

@@ -5,7 +5,6 @@
 }
 #ui-datepicker-div {
     background: #f7f7f7;
-    border: 1px solid #007bff;
     color: #007bff !important;
 }
 #LoginForm {
@@ -15,6 +14,10 @@ tfoot {
 }
 thead {
     display: table-row-group;
+}
+#ModDiv {
+    float:right;
+    margin-left: 702px;
 }
 .prikazStudenta {
     border-top: 1px #0091b5 solid;

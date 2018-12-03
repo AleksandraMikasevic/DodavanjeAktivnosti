@@ -41,6 +41,7 @@ namespace NNProjekat
             })
      .AddCookie(options => {
          options.LoginPath = "/Account/Index/";
+         options.Cookie.Expiration = TimeSpan.FromHours(24);
      });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAktivnostiData, SqlAktivnostiData>();

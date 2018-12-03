@@ -161,7 +161,7 @@ namespace NNProjekat.Controllers
         {
             var model = _aktivnostData.UcitajSve();
             List<Aktivnost> aktivnosti = model.ToList();
-          
+            
             for (int i = 0; i < aktivnosti.Count; i++) {
                 Aktivnost aktivnost = aktivnosti.ElementAt(i);
                 Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);

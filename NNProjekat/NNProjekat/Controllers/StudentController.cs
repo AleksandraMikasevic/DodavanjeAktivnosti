@@ -83,6 +83,11 @@ namespace NNProjekat.Controllers
             var model = new StudentSviStudenti();
             model.Studenti = _studentData.UcitajSvePoPredmetu(id);
             model.SifraPredmeta = id;
+            model.Mod = new List<StudentSviStudentiMod>();
+            model.Mod.Add(new StudentSviStudentiMod("Položili", "0"));
+            model.Mod.Add(new StudentSviStudentiMod("Svi studenti", "1"));
+            model.Mod.Add(new StudentSviStudentiMod("Nisu položili", "2"));
+
             model.Predmet = _predmetData.Vrati(id);
             return View(model);
         }
@@ -141,7 +146,7 @@ namespace NNProjekat.Controllers
         [HttpPost]
         public IActionResult PredmetiStudent(string id)
         {
-            var model = _slusanjaData.UcitajSve(id);
+            var model = _slusanjaData.UcitajSve(id).Where(s => s.ZakljucenaOcena == null);
             Console.WriteLine("ID: ++++++++++++++++++" + id);
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -252,10 +257,11 @@ namespace NNProjekat.Controllers
             SelectList predmetiSel = new SelectList(preostaliPredmeti, "SifraPredmeta", "Naziv", 0);
             return Json(predmetiSel);
         }
-        [Route("/Student/VratiStudentePoPredmetu/{id}/{datumOd}/{datumDo}")]
+        [Route("/Student/VratiStudentePoPredmetu/{id}/{datumOd}/{datumDo}/{mod}")]
         [HttpPost]
-        public IActionResult VratiStudentePoPredmetu(string id, string datumOd, string datumDo)
+        public IActionResult VratiStudentePoPredmetu(string id, string datumOd, string datumDo, string mod)
         {
+            Console.WriteLine("VRACAAAAAAAAAAA STUDENTE");
             Console.WriteLine("ID: ++++++++++++++++++" + id);
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -267,6 +273,23 @@ namespace NNProjekat.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
             var model = _slusanjaData.UcitajSveStudente(id).Where(s => s.ZakljucenaOcena != null);
+            if (mod == "1") {
+                Console.WriteLine("Svi studenti");
+                model = _slusanjaData.UcitajSveStudente(id);
+            }
+            if (mod == "2") {
+                model = _slusanjaData.UcitajSveStudente(id).Where(s => s.ZakljucenaOcena == null);
+            }
+            if (mod == "0")
+            {
+                Console.WriteLine(datumOd + " datumOd");
+                Console.WriteLine(datumDo + " datumDo");
+                if (datumOd != "undefined" && datumDo != "undefined")
+                {
+                    Console.WriteLine("uslo u undefined");
+                    model = _slusanjaData.UcitajSveStudenteIzmedjuDatuma(id, datumOd, datumDo);
+                }
+            }
             Console.WriteLine(model.ToList().Count + "------------------------------DUZINA SLUSANJAAA");
             Console.WriteLine("SOrt colummmmmmmmmmmmn --" + sortColumn);
             /* if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))

@@ -11,5 +11,6 @@ namespace NNProjekat.ViewModels
         public IEnumerable<Slusa> Studenti { get; set; }
         public string SifraPredmeta { get; set; }
         public Predmet Predmet { get; set; }
+        public List<StudentSviStudentiMod> Mod { get; set; }
     }
 }

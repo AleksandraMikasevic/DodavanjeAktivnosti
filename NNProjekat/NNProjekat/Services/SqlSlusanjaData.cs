@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -39,44 +40,33 @@ namespace NNProjekat.Services
         {
             int konacnaOcena = 0;
             double poeni = 0;
+            bool nijePao = true;
             foreach (TipAktivnosti tipAktivnosti in slusanja.Predmet.TipoviAktivnosti)
             {
+                bool nijePronadjen = true;
                 foreach (Aktivnost aktivnost in aktivnostiStudenta)
                 {
-                    if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti && aktivnost.Status == true && aktivnost.Validna == true)
+                    if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti  && aktivnost.Validna == true)
                     {
+                        nijePronadjen = false;
                         if (tipAktivnosti.Obavezna == true && aktivnost.Status == false)
                         {
                             return 5;
                         }
-                        if (tipAktivnosti.Naziv == "Kolokvijum 1")
-                        {
-                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
-                        }
-                        if (tipAktivnosti.Naziv == "Kolokvijum 2")
-                        {
-                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
-                        }
-                        if (tipAktivnosti.Naziv == "Domaci zadatak")
-                        {
-                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
-                        }
-                        if (tipAktivnosti.Naziv == "Aktivnost")
-                        {
-                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
-                        }
-                        if (tipAktivnosti.Naziv == "Projekat")
-                        {
-                            poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
-                        }
-                        if (tipAktivnosti.Naziv == "Seminarski rad")
+                        if (aktivnost.Status == true)
                         {
                             poeni = poeni + aktivnost.BrojPoena * tipAktivnosti.TezinskiKoeficijent;
                         }
                     }
                 }
+                if (nijePronadjen == true && tipAktivnosti.Obavezna == true)
+                {
+                    nijePao = false;
+                }
             }
-
+            if (nijePao == false) {
+                return 0;
+            }
             if (poeni <= 50)
             {
                 konacnaOcena = 5;
@@ -111,8 +101,12 @@ namespace NNProjekat.Services
             double poeni1 = 0;
             int ocena2 = 0;
             double poeni2 = 0;
+            bool nijePao = true;
+
             foreach (TipAktivnosti tipAktivnosti in slusanja.Predmet.TipoviAktivnosti)
             {
+                bool nijePronadjen = true;
+
                 foreach (Aktivnost aktivnost in aktivnostiStudenta)
                 {
                     Console.WriteLine("STATUS " + aktivnost.Status);
@@ -120,6 +114,8 @@ namespace NNProjekat.Services
 
                     if (aktivnost.SifraTipaAktivnosti == tipAktivnosti.SifraTipaAktivnosti)
                     {
+                        nijePronadjen = false;
+
                         if (aktivnost.Validna == true)
                         {
                             if (tipAktivnosti.Obavezna == true && aktivnost.Status == false)
@@ -155,8 +151,15 @@ namespace NNProjekat.Services
                         }
                     }
                 }
+                if (nijePronadjen == true && tipAktivnosti.Obavezna == true)
+                {
+                    nijePao = false;
+                }
             }
-
+            if (nijePao == false)
+            {
+                return 0;
+            }
             if (poeni1 <= 50)
             {
                 ocena1 = 5;
@@ -247,6 +250,12 @@ namespace NNProjekat.Services
 
         public void Izbrisi(Slusa slusa)
         {
+            string sifraPredmeta = slusa.SifraPredmeta;
+            string JMBG = slusa.JMBG;
+            List<Aktivnost> aktivnosti = _context.Aktivnosti.Where(a => a.SifraPredmeta == sifraPredmeta && a.StudentJMBG == JMBG).ToList();
+            foreach (Aktivnost aktivnost in aktivnosti) {
+                _context.Aktivnosti.Remove(aktivnost);
+            }
             _context.Remove(slusa);
             _context.SaveChanges();
         }
@@ -259,12 +268,28 @@ namespace NNProjekat.Services
                 slusanja.ZakljucenaOcena = null;
                 slusanja.DatumZakljucivanja = null;
             }
-            else { slusanja.ZakljucenaOcena = Convert.ToInt32(ocena);
+            else
+            {
+                slusanja.ZakljucenaOcena = Convert.ToInt32(ocena);
                 slusanja.DatumZakljucivanja = DateTime.Now;
 
             }
             _context.Slusanja.Update(slusanja);
             _context.SaveChanges();
+        }
+
+        public IEnumerable<Slusa> UcitajSveStudenteIzmedjuDatuma(string id, string datumOd, string datumDo)
+        {
+            Console.WriteLine("Uslo u service");
+            Console.WriteLine(datumOd + " datumOd");
+            Console.WriteLine(datumDo + " datumDo");
+            DateTime datumOdDate = DateTime.ParseExact(datumOd, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+            DateTime datumDoDate = DateTime.ParseExact(datumDo, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+            IEnumerable<Slusa> slusanja = _context.Slusanja.Include(s => s.Student).Where(r => r.SifraPredmeta == id && r.DatumZakljucivanja != null
+           && DateTime.Compare(datumOdDate, (r.DatumZakljucivanja ?? DateTime.Now)) <= 0 &&
+            DateTime.Compare(datumDoDate, (r.DatumZakljucivanja ?? DateTime.Now)) >= 0);
+
+            return slusanja;
         }
     }
 }

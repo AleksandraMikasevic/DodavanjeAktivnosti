@@ -15,7 +15,6 @@
             <div class="form-group">
                 <label asp-for="SifraPredmeta"></label>
                 <select id="predmeti" asp-for="SifraPredmeta" class="form-control" onchange="PromenaPredmeta()" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))" value=@Model.SifraPredmeta></select>
-
             </div>
             <div class="form-group">
                 <label asp-for="SifraTipaAktivnosti"></label>
@@ -42,6 +41,7 @@
     </div>
 </div>
 <script>
+
     $(document).ready(function () {
         $('form').bootstrapValidator({
             fields: {

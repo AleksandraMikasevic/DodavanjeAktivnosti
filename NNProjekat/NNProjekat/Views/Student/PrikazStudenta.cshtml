@@ -65,30 +65,34 @@
         else
         {
             <span>Zaključena ocena</span>
-            <span>@Model.Slusa.ZakljucenaOcena</span>
             <span>
+                @Model.Slusa.ZakljucenaOcena
+
                 <a href="/Student/IzbrisiZakljucenuOcenu/@Model.Slusa.JMBG/@Model.Slusa.SifraPredmeta">
                     <i class="fa fa-remove" style="font-size:24px"></i>
                 </a>
             </span>
         }
     </div>
-    <div class="prikazStudentaOcena list-group-item  d-flex justify-content-between align-items-center">
-        @if (Model.Slusa.ZakljucenaOcena == null)
-        {
+    @if (Model.Slusa.ZakljucenaOcena == null)
+    {
+        <div style="padding-bottom:0px" class="prikazStudentaOcena list-group-item  d-flex justify-content-between align-items-center">
+
             <span>Izaberi ocenu za zaključivanje: </span>
             <form id="formaZak" method="post" asp-all-route-data=parms asp-action="ZakljuciOcenuPromena" asp-controller="Student">
                 <div class="form-row">
-                    <input placeholder="Ocena" class="form-control" type="text" name="Ocena" value="" />
-                    <a id="SumLink" href="#">
-                        <i class="fa fa-check" style="font-size:24px"></i>
-                    </a>
+                    <div class="form-group">
+                        <input placeholder="Ocena" class="form-control" type="text" name="Ocena" value="" />
+                    </div>
+                    <div class="form-group">
+                        <a id="SumLink" href="#">
+                            <i class="fa fa-check" style="font-size:24px"></i>
+                        </a>
+                    </div>
                 </div>
-
             </form>
-        }
-    </div>
-
+        </div>
+    }
 </div>
 <br />
 
