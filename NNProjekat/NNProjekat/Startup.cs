@@ -33,6 +33,7 @@ namespace NNProjekat
         {
             services.AddDbContext<NNProjekatDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("projekat1DB")));
 
+            services.Configure<SecurityStampValidatorOptions>(options=>options.ValidationInterval = TimeSpan.FromHours(24));
             services.AddAuthentication(options =>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;

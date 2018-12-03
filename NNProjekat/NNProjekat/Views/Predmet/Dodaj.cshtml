@@ -3,133 +3,231 @@
     ViewData["Title"] = "Dodaj predmet";
 }
 
+<input type="text" id="SifraTipa" value="" />
+<button type="button" id="Klik" class="btn btn-info fa fa-cogs" name="IzmeniTip">Klik</button>
 <div class="forma">
     <div class="main-div">
         <div class="panel">
-            <h2>Unos studenta</h2>
-            <p>Unesite informacije o studentu</p>
+            <h2>Unos predmeta</h2>
+            <p>Unesite informacije o predmetu</p>
         </div>
-        <form method="post" asp-action="DodajPost" asp-controller="Aktivnost">
+        <form id="mojaForma" method="post" asp-action="DodajPost" asp-controller="Predmet">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label asp-for="SifraPredmeta"></label>
+                    <input asp-for="SifraPredmeta" placeholder="Sifra predmeta" class="form-control" type="text" name="SifraPredmeta" value="" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Naziv"></label>
+                    <input asp-for="Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="BrojESPB"></label>
+                    <input asp-for="BrojESPB" placeholder="BrojESPB" class="form-control" type="text" name="BrojESPB" value="" />
+                </div>
+            </div>
+            <div class="list-group" style="width:100%; margin:0 auto;">
+                <label>Informacije o tipu aktivnosti</label>
+                <div class="list-group-item">
 
-            <div class="form-group">
-                <label asp-for="SifraPredmeta"></label>
-                <input asp-for="SifraPredmeta" placeholder="Sifra predmeta" class="form-control" type="text" name="SifraPredmeta" value="" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Naziv</label>
+                            <input type="text" id="Naziv123" placeholder="Naziv" class="form-control" name="Naziv123" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Minimalni broj poena</label>
+                            <input type="text" id="MinBrojPoena" placeholder="Minimalni broj poena" class="form-control" name="MinBrojPoena" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Maksimalni broj poena</label>
+                            <input type="text" id="MaxBrojPoena" placeholder="Maksimalni broj poena" class="form-control" name="MaxBrojPoena" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Težinski koeficijent</label>
+                            <input type="text" id="TezKoef" placeholder="Težinski koeficijent" class="form-control" name="TezKoef" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+
+                        <div class="form-group col-md-4">
+                            <input type="checkbox" name="obavezna" id="Obavezna" /> <label>Obavezna</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Sacuvaj tip</button>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="button" id="IzmeniTip" class="btn btn-info fa fa-cogs" name="IzmeniTip"></button>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="button" id="IzbrisiTip" class="btn btn-info fa fa-remove" name="IzbrisiTip"></button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <table id="tipoviAktivnosti" class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Šifra tipa aktivnosti</th>
+                            <th scope="col">Naziv</th>
+                            <th scope="col">Min broj poena</th>
+                            <th scope="col">Maks broj poena</th>
+                            <th scope="col">Težinski koeficijent</th>
+                            <th scope="col">Obavezna</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
-            <div class="form-group">
-                <label asp-for="Naziv"></label>
-                <input asp-for="Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="" />
-            </div>
-            <div class="form-group">
-                <label asp-for="BrojESPB"></label>
-                <input asp-for="BrojESPB" placeholder="BrojESPB" class="form-control" type="text" name="BrojESPB" value="" />
-            </div>
-            <button id="search">Search</button>
-            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj predmet</button>
-            @foreach (var TipAktivnosti in Model.TipoviAktivnosti)
-            {
-                @Html.Partial("_DodajTip", Model);
-            }
+            <br />
+            <button type="button" id="SacuvajDugme" class="btn btn-primary" name="sacuvaj">Sacuvaj predmet</button>
+            <input asp-for="JsonString" id="JsonString" hidden="hidden" class="form-control" type="text" name="JsonString" value="" />
         </form>
     </div>
 </div>
 <script>
-    var url = '@Url.Action("Predmet", "DodajAktivnost")';
-$('#search').click(function() {
-  var keyWord = $('#Keyword').val();
-  $('#searchResults').load(url, { searchText: keyWord });
-})
+    var t;
+    var p;
+    $(document).ready(function () {
 
-        /*
-        var t;
-        $(document).ready(function () {
-            t = $("#tipoviAktivnosti").DataTable({
-                dom: "Brtip",
-                // for disable multiple column at once
-                ajax: {
-                    "url": "/Predmet/VratiTipoveAktivnostiDodaj",
-                    "type": "GET",
-                    "datatype": "json",
-                    dataSrc: ''
-                },
-                "columns": [
-                    { "data": "SifraTipaAktivnosti", "name": "SifraTipaAktivnosti", "autoWidth": true },
-                    { "data": "Naziv", "name": "Naziv", "autoWidth": true },
-                    { "data": "MinBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
-                    { "data": "MaxBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
-                    { "data": "TezinskiKoeficijent", "name": "MinBrojPoena", "autoWidth": true },
-                    { "data": "Obavezna", "name": "Obavezna", "autoWidth": true }
-                ]
-            });
-            var counter = 1;
+        t = $("#tipoviAktivnosti").DataTable({
+            dom: "Brtip",
+            // for disable multiple column at once
+            ajax: {
+                "url": "/Predmet/VratiTipoveAktivnostiDodaj",
+                "type": "GET",
+                "datatype": "json",
+                dataSrc: ''
+            },
+            "columns": [
+                { "data": "SifraTipaAktivnosti", "name": "SifraTipaAktivnosti", "autoWidth": true },
+                { "data": "Naziv", "name": "Naziv", "autoWidth": true },
+                { "data": "MinBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
+                { "data": "MaxBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
+                { "data": "TezinskiKoeficijent", "name": "MinBrojPoena", "autoWidth": true },
+                { "data": "Obavezna", "name": "Obavezna", "autoWidth": true }
+            ]
+        });
+        var counter = 1;
 
-            $('#dodajAktivnost').on('click', function () {
-                    $.ajax({
-                        url: "/Predmet/DodajAktivnost/" + document.getElementById("SifraTipaAktivnosti").value + "/"
-                            + document.getElementById("Naziv123").value + "/" +
-                            document.getElementById("MinBrojPoena").value +"/"+ document.getElementById("MaxBrojPoena").value + "/"+
-                            document.getElementById("TezinskiKoeficijent").value+"/"+"true",
-                        type: 'get',
-                        "datatype": "json",
-                        success: function (data) {
-                            alert(JSON.stringify(data["data"]));
-                            t.row.add(data["data"]).draw(false);
-                            $("#izbrisiAktivnost").prop('disabled', true);
-                            $("#izmeniAktivnost").prop('disabled', true);
-                        },
-                        error: function (jqxhr, status, exception) {
-                            alert('Exception:', exception.toString());
-                        }
-                    });
-
-                });
-
-
-
-            $('#tipoviAktivnosti tbody').on('click', 'tr', function () {
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                    $("#izbrisiAktivnost").prop('disabled', true);
-                    $("#izmeniAktivnost").prop('disabled', true);
-                } else {
-                    t.$('tr.selected').removeClass('selected');
-                    $(this).addClass('selected');
-                    $("#izbrisiAktivnost").prop('disabled', false);
-                    $("#izmeniAktivnost").prop('disabled', false);
-                }
-            });
-
-            $('#izbrisiAktivnost').click(function () {
-
-                var selectedRow = t.cell('.selected', 1).data();
-                ;
-                alert(selectedRow);
+        $('#sacTip').on('click', function () {
+            alert($("input[type='checkbox']").is(':checked'));
+            if ($("#SifraTipa").val() === "") {
                 $.ajax({
-                    url: "/NJProjekatFED/goods_received_note/remove_item/" + selectedRow,
-                    type: 'GET',
+                    url: "/Predmet/DodajTip/"
+                        + document.getElementById("Naziv123").value + "/" +
+                        document.getElementById("MinBrojPoena").value + "/" + document.getElementById("MaxBrojPoena").value + "/" +
+                        document.getElementById("TezKoef").value + "/" + $("input[type='checkbox']").is(':checked'),
+                    type: 'get',
+                    "datatype": "json",
                     success: function (data) {
-                        t.ajax.reload();
-                        document.getElementById("brojStavke").value = "";
-                        $("#izbrisiAktivnost").prop('disabled', true);
-                        $("#izmeniAktivnost").prop('disabled', true);
+                        t.row.add(data["data"]).draw(false);
+                        $("#IzbrisiTip").prop('disabled', true);
+                        $("#IzmeniTip").prop('disabled', true);
                     },
                     error: function (jqxhr, status, exception) {
                         alert('Exception:', exception.toString());
                     }
                 });
-            });
-            $('#izmeniAktivnost').click(function () {
-                var selectedRowKolicina = t.cell('.selected', 2).data();
-                var selectedRowMaterijal = t.cell('.selected', 3).data();
-                var selectedRowBrojStavke = t.cell('.selected', 1).data();
-                $("#SifraTipaAktivnosti").prop('disabled', true);
-                document.getElementById("kolicina").value = selectedRowKolicina;
-                document.getElementById("materijalID").value = selectedRowMaterijal;
-                document.getElementById("brojStavke").value = selectedRowBrojStavke;
+            }
+            else {
+                $.ajax({
+                    url: "/Predmet/IzmeniTip/" + document.getElementById("SifraTipa").value + "/"
+                        + document.getElementById("Naziv123").value + "/" +
+                        document.getElementById("MinBrojPoena").value + "/" + document.getElementById("MaxBrojPoena").value + "/" +
+                        document.getElementById("TezKoef").value + "/" + $("input[type='checkbox']").is(':checked'),
+                    type: 'get',
+                    "datatype": "json",
+                    success: function (data) {
+                        alert(JSON.stringify(data["data"]));
+                        //var id = $(t.row('.selected').node()).data('id');
+                        //alert(id);
+                        t.rows().eq(0).each(function (index) {
+                            var row = t.row(index);
+                            if (t.cell(index, 0).data() == data["data"].SifraTipaAktivnosti) {
+                                t.row(index).data(data["data"]).draw();
+                            }
+                            // ... do something with data(), or row.node(), etc
+                        });
+                        $("#IzbrisiTip").prop('disabled', true);
+                        $("#IzmeniTip").prop('disabled', true);
+                        document.getElementById("SifraTipa").value = "";
+                    },
+                    error: function (jqxhr, status, exception) {
+                        alert('Exception:', exception.toString());
+                    }
+                });
+
+            }
+
+        });
+
+
+
+        $('#tipoviAktivnosti tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                $("#IzbrisiTip").prop('disabled', true);
+                $("#IzmeniTip").prop('disabled', true);
+            } else {
+                t.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+                $("#IzbrisiTip").prop('disabled', false);
+                $("#IzmeniTip").prop('disabled', false);
+            }
+        });
+
+
+        $('#IzbrisiTip').click(function () {
+
+            var selectedRow = t.cell('.selected', 0).data();
+            alert(selectedRow);
+            $.ajax({
+                url: "/Predmet/IzbrisiAktivnost/" + selectedRow,
+                type: 'GET',
+                success: function (data) {
+                    // t.ajax.reload();
+                    document.getElementById("SifraTipa").value = "";
+                    $("#IzbrisiTip").prop('disabled', true);
+                    $("#IzmeniTip").prop('disabled', true);
+                    t.row('.selected').remove().draw(false);
+                },
+                error: function (jqxhr, status, exception) {
+                    alert('Exception:', exception.toString());
+                }
             });
         });
-        function tableActions() {
-            alert(JSON.stringify(t.rows().data()));
-            // perform API operations with `table`
-            // ...
-        }*/
+
+        $('#SacuvajDugme').click(function () {
+            document.getElementById("JsonString").value = JSON.stringify(t.rows().data().toArray());
+            $("#mojaForma").submit();
+        });
+
+        $('#IzmeniTip').click(function () {
+            var selectedRowSifraTipaAktivnosti = t.cell('.selected', 0).data();
+            var selectedRowNaziv = t.cell('.selected', 1).data();
+            var selectedRowMinBrojPoena = t.cell('.selected', 2).data();
+            var selectedRowMaxBrojPoena = t.cell('.selected', 3).data();
+            var selectedRowTezKoef = t.cell('.selected', 4).data();
+            var selectedRowObavezna = t.cell('.selected', 5).data();
+            document.getElementById("Naziv123").value = selectedRowNaziv;
+            document.getElementById("MinBrojPoena").value = selectedRowMinBrojPoena;
+            document.getElementById("MaxBrojPoena").value = selectedRowMaxBrojPoena;
+            document.getElementById("TezKoef").value = selectedRowTezKoef;
+            if (selectedRowObavezna == true) {
+                $("input[type='checkbox']").prop('checked', true);
+            }
+            else {
+                $("input[type='checkbox']").prop('checked', false);
+            }
+            document.getElementById("SifraTipa").value = selectedRowSifraTipaAktivnosti;
+
+        });
+    });
+    function tableActions() {
+        alert(JSON.stringify(t.rows().data()));
+        // perform API operations with `table`
+        // ...
+    }
 </script>

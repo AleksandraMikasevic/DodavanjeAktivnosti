@@ -146,7 +146,7 @@ namespace NNProjekat.Controllers
         [HttpPost]
         public IActionResult PredmetiStudent(string id)
         {
-            var model = _slusanjaData.UcitajSve(id).Where(s => s.ZakljucenaOcena == null);
+            var model = _slusanjaData.UcitajSve(id);
             Console.WriteLine("ID: ++++++++++++++++++" + id);
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();

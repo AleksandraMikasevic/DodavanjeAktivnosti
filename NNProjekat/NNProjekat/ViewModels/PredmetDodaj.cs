@@ -12,7 +12,7 @@ namespace NNProjekat.ViewModels
         public string Naziv { get; set; }
         public int BrojESPB { get; set; }
         public List<TipAktivnosti> TipoviAktivnosti { get; set; }
-
+        public String JsonString { get; set; }
         public PredmetDodaj()
         {
             TipoviAktivnosti = new List<TipAktivnosti>();

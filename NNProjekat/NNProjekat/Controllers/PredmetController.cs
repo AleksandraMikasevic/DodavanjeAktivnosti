@@ -68,7 +68,7 @@ namespace NNProjekat.Controllers
             var data = model.Skip(skip).Take(pageSize).ToList();
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
-        
+
         public IActionResult PrikazPredmeta(string id)
         {
 
@@ -122,9 +122,65 @@ namespace NNProjekat.Controllers
         public IActionResult VratiTipoveAktivnostiDodaj()
         {
             var model = new List<TipAktivnostiDodaj>();
-            return Json(new { data = model});
+            return Json(new { data = model });
         }
-       
+        [HttpGet]
+        public IActionResult VratiTipoveAktivnostiIzmeni(string id)
+        {
+            var model = _predmetData.Vrati(id).TipoviAktivnosti;
+            return Json(new { data = model });
+        }
+        [HttpGet]
+        [Route("/Predmet/DodajTip/{Naziv}/{MinBrojPoena}/{MaxBrojPoena}/{TezKoef}/{Obavezna}")]
+        public IActionResult DodajAktivnost(string Naziv, string MinBrojPoena, string MaxBrojPoena, string TezKoef, string Obavezna)
+        {
+            Console.WriteLine("Naziv: "+Naziv+", min: "+MinBrojPoena+" maks: "+MaxBrojPoena+" obavezna: "+Obavezna);
+            TipAktivnosti tipAktivnosti = new TipAktivnosti();
+            tipAktivnosti.SifraTipaAktivnosti = Guid.NewGuid().ToString();
+            tipAktivnosti.Naziv = Naziv;
+            tipAktivnosti.MinBrojPoena = Double.Parse(MinBrojPoena);
+            tipAktivnosti.MaxBrojPoena = Double.Parse(MaxBrojPoena);
+            tipAktivnosti.TezinskiKoeficijent = Double.Parse(TezKoef);
+            tipAktivnosti.Obavezna = Boolean.Parse(Obavezna);
+            //dodas u json
+            return Json(new { data = tipAktivnosti });
+        }
+        [HttpGet]
+        [Route("/Predmet/IzmeniTip/{SifraTipa}/{Naziv}/{MinBrojPoena}/{MaxBrojPoena}/{TezKoef}/{Obavezna}")]
+        public IActionResult IzmeniAktivnost(string SifraTipa, string Naziv, string MinBrojPoena, string MaxBrojPoena, string TezKoef, string Obavezna)
+        {
+            Console.WriteLine("Naziv: " + Naziv + ", min: " + MinBrojPoena + " maks: " + MaxBrojPoena + " obavezna: " + Obavezna);
+            TipAktivnosti tipAktivnosti = new TipAktivnosti();
+            //pronadjes tip aktivnosti iz jsona i promenis onaj sa tom sifrom tipa
+            tipAktivnosti.SifraTipaAktivnosti = SifraTipa;
+            tipAktivnosti.Naziv = Naziv;
+            tipAktivnosti.MinBrojPoena = Double.Parse(MinBrojPoena);
+            tipAktivnosti.MaxBrojPoena = Double.Parse(MaxBrojPoena);
+            tipAktivnosti.TezinskiKoeficijent = Double.Parse(TezKoef);
+            tipAktivnosti.Obavezna = Boolean.Parse(Obavezna);
+            return Json(new { data = tipAktivnosti });
+        }
+        [HttpGet]
+        public IActionResult IzbrisiAktivnost(string id)
+        {
+            TipAktivnosti tipAktivnosti = new TipAktivnosti();
+            //pronadjes tip aktivnosti iz jsona i i izbrises onog sa tom sifrom
+            return Json(new { data = tipAktivnosti });
+        }
+
+        [HttpPost]
+        public IActionResult DodajPost(PredmetDodaj predmetDodaj)
+        {
+            Predmet predmet = new Predmet();
+            predmet.Naziv = predmetDodaj.Naziv;
+            predmet.SifraPredmeta = predmetDodaj.SifraPredmeta;
+            predmet.BrojESPB = predmetDodaj.BrojESPB;
+            JArray nizTipova = JArray.Parse(predmetDodaj.JsonString);
+            predmet.TipoviAktivnosti = nizTipova.ToObject<List<TipAktivnosti>>();
+            _predmetData.Dodaj(predmet);
+            return RedirectToAction("SviPredmeti", "Predmet");
+        }
+
         /*
        [HttpPost]
         public IActionResult VratiTipoveAktivnostiDodaj(ISession session)
@@ -196,7 +252,7 @@ namespace NNProjekat.Controllers
             {
                 studenti.Add(slusa.Student);
             }
-            SelectList studentiSel = new SelectList(studenti.Select(s => new {Text=s.Ime+" "+s.Prezime+"-"+s.BrojIndeksa, JMBG = s.JMBG }), "JMBG", "Text", 0);
+            SelectList studentiSel = new SelectList(studenti.Select(s => new { Text = s.Ime + " " + s.Prezime + "-" + s.BrojIndeksa, JMBG = s.JMBG }), "JMBG", "Text", 0);
             return Json(studentiSel);
         }
 
@@ -219,6 +275,9 @@ namespace NNProjekat.Controllers
             return View(model);
         }
 
-
+        public ActionResult DisplaySearchResults(string searchText)
+        {
+            return PartialView("_DodajTip");
+        }
     }
 }
