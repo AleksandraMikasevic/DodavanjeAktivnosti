@@ -13,10 +13,13 @@
             <tr>
                 <th><div>Šifra predmeta</div></th>
                 <th><div>Naziv</div></th>
-                <th><div>BrojESPB</div></th>
+                <th><div>Broj ESPB poena</div></th>
                 <th><div>Tipovi aktivnosti</div></th>
                 <th><div>Studenti</div></th>
                 <th><div>Prikaz ocena</div></th>
+                <th><div></div></th>
+                <th><div></div></th>
+
             </tr>
         </thead>
     </table>
@@ -51,7 +54,7 @@
                 "datatype": "json"
             },
             "columnDefs": [{
-                "targets": [3,4,5],
+                "targets": [3, 4, 5],
                 "orderable": false
             }],
             "columns": [
@@ -60,7 +63,7 @@
                 { "data": "BrojESPB", "name": "BrojESPB", "autoWidth": true },
 
                 {
-                    "render": function (data, type, full, meta) { return '<a class="fa fa-search-plus btn btn-info" href="/Predmet/PrikazPredmeta/'+full.SifraPredmeta+'"></a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-search-plus btn btn-info" href="/Predmet/PrikazPredmeta/' + full.SifraPredmeta + '"></a>'; }
                 },
 
                 {
@@ -70,6 +73,12 @@
 
                 {
                     "render": function (data, type, full, meta) { return '<a class="fa fa-bar-chart btn btn-info" href="/Predmet/VizuelniPrikaz/' + full.SifraPredmeta + '"></a>'; }
+                },
+                {
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-cogs" href="/Predmet/Izmeni/' + full.SifraPredmeta + '"></a>'; }
+                },
+                {
+                    "render": function (data, type, full, meta) { return '<a class="fa fa-remove" href="/Predmet/Izbrisi/' + full.SifraPredmeta + '"></a>'; }
                 }
             ]
 

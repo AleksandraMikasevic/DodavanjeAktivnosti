@@ -118,17 +118,47 @@ namespace NNProjekat.Controllers
             PredmetDodaj predmet = new PredmetDodaj();
             return View(predmet);
         }
+        public IActionResult Izmeni(string id)
+        {
+            PredmetDodaj predmetDodaj = new PredmetDodaj();
+            Predmet predmet = _predmetData.Vrati(id);
+            predmetDodaj.SifraPredmeta = predmet.SifraPredmeta;
+            predmetDodaj.Naziv = predmet.Naziv;
+            predmetDodaj.TipoviAktivnosti = predmet.TipoviAktivnosti.ToList();
+            predmetDodaj.BrojESPB = predmet.BrojESPB;
+            foreach (TipAktivnosti tipAktivnosti in predmetDodaj.TipoviAktivnosti) {
+                tipAktivnosti.Predmet = null;
+            }
+            return View(predmetDodaj);
+        }
+        public IActionResult Izbrisi(string id)
+        {
+            PredmetDodaj predmetDodaj = new PredmetDodaj();
+            Predmet predmet = _predmetData.Vrati(id);
+            predmetDodaj.SifraPredmeta = predmet.SifraPredmeta;
+            predmetDodaj.Naziv = predmet.Naziv;
+            predmetDodaj.TipoviAktivnosti = predmet.TipoviAktivnosti.ToList();
+            predmetDodaj.BrojESPB = predmet.BrojESPB;
+            return View(predmetDodaj);
+        }
         [HttpGet]
         public IActionResult VratiTipoveAktivnostiDodaj()
         {
             var model = new List<TipAktivnostiDodaj>();
             return Json(new { data = model });
         }
+     
+
         [HttpGet]
+        [Route("/Predmet/VratiTipoveAktivnostiIzmeni/{id}")]
         public IActionResult VratiTipoveAktivnostiIzmeni(string id)
         {
-            var model = _predmetData.Vrati(id).TipoviAktivnosti;
-            return Json(new { data = model });
+            var data = _predmetData.VratiIzmeni(id).ToList();
+            foreach (TipAktivnosti tipAktivnosti in data) {
+                tipAktivnosti.Predmet = null;
+            }
+            Console.WriteLine(data.Count+"  ne znam zasto ne vraca");
+            return Json(new { data = data });
         }
         [HttpGet]
         [Route("/Predmet/DodajTip/{Naziv}/{MinBrojPoena}/{MaxBrojPoena}/{TezKoef}/{Obavezna}")]
@@ -145,6 +175,7 @@ namespace NNProjekat.Controllers
             //dodas u json
             return Json(new { data = tipAktivnosti });
         }
+        //sandra sandra
         [HttpGet]
         [Route("/Predmet/IzmeniTip/{SifraTipa}/{Naziv}/{MinBrojPoena}/{MaxBrojPoena}/{TezKoef}/{Obavezna}")]
         public IActionResult IzmeniAktivnost(string SifraTipa, string Naziv, string MinBrojPoena, string MaxBrojPoena, string TezKoef, string Obavezna)
@@ -180,7 +211,25 @@ namespace NNProjekat.Controllers
             _predmetData.Dodaj(predmet);
             return RedirectToAction("SviPredmeti", "Predmet");
         }
-
+        [HttpPost]
+        public IActionResult IzmeniPost(PredmetDodaj predmetDodaj)
+        {
+            Predmet predmet = new Predmet();
+            predmet.Naziv = predmetDodaj.Naziv;
+            predmet.SifraPredmeta = predmetDodaj.SifraPredmeta;
+            predmet.BrojESPB = predmetDodaj.BrojESPB;
+            JArray nizTipova = JArray.Parse(predmetDodaj.JsonString);
+            predmet.TipoviAktivnosti = nizTipova.ToObject<List<TipAktivnosti>>();
+            _predmetData.Izmeni(predmet);
+            return RedirectToAction("SviPredmeti", "Predmet");
+        }
+        [Route("/Predmet/IzbrisiPost/{id}")]
+        [HttpPost]
+        public IActionResult IzbrisiPost(string id)
+        {
+            _predmetData.Izbrisi(id);
+            return RedirectToAction("SviPredmeti", "Predmet");
+        }
         /*
        [HttpPost]
         public IActionResult VratiTipoveAktivnostiDodaj(ISession session)

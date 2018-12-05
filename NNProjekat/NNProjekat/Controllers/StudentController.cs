@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace NNProjekat.Controllers
 {
@@ -95,17 +96,21 @@ namespace NNProjekat.Controllers
         public IActionResult Dodaj()
         {
             var model = new StudentDodaj();
+            model.Predmeti = _predmetData.UcitajSve().ToList();
             return View(model);
         }
         [HttpPost]
         public IActionResult DodajPost(StudentDodaj studentDodaj)
         {
             Student student = new Student();
+            Console.WriteLine("Dodaje123 studenta123");
             student.Ime = studentDodaj.Ime;
             student.Prezime = studentDodaj.Prezime;
             student.JMBG = studentDodaj.JMBG;
             student.BrojIndeksa = studentDodaj.BrojIndeksa;
-            _studentData.Dodaj(student);
+            JArray nizPredmeta = JArray.Parse(studentDodaj.JsonString);
+            List<Predmet> predmeti=  nizPredmeta.ToObject<List<Predmet>>();
+            _studentData.Dodaj(student, predmeti);
             return RedirectToAction("SviStudenti", "Student");
         }
 
@@ -180,6 +185,27 @@ namespace NNProjekat.Controllers
             var data = model.Skip(skip).Take(pageSize).ToList();
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
+        [HttpGet]
+        public IActionResult VratiPredmeteDodaj()
+        {
+            var model = new List<Predmet>();
+            return Json(new { data = model });
+        }
+        [HttpGet]
+        public IActionResult VratiPredmeteIzmeni(string id)
+        {
+            var model = new List<Predmet>();
+            IEnumerable<Slusa> slusanja = new List<Slusa>();
+            slusanja = _slusanjaData.UcitajSve(id);
+            List<Predmet> predmeti = new List<Predmet>();
+            foreach (Slusa slusa in slusanja)
+            {
+                predmeti.Add(slusa.Predmet);
+            }
+            model = predmeti;
+            return Json(new { data = model });
+        }
+
 
         [Route("/Student/DodajSlusanje/{sifraPredmeta}/{JMBG}")]
         public void DodajSlusanje(string sifraPredmeta, string JMBG)
@@ -203,7 +229,37 @@ namespace NNProjekat.Controllers
         }
         public IActionResult IzmeniStudenta(string id)
         {
-            var model = _studentData.VratiPoJMBG(id);
+            var student = _studentData.VratiPoJMBG(id);
+            var model = new StudentDodaj();
+            model.Ime = student.Ime;
+            model.Prezime = student.Prezime;
+            model.JMBG = student.JMBG;
+            model.BrojIndeksa = student.BrojIndeksa;
+            IEnumerable<Slusa> slusanja = new List<Slusa>();
+            slusanja = _slusanjaData.UcitajSve(id);
+            List<Predmet> predmeti = new List<Predmet>();
+            foreach (Slusa slusa in slusanja)
+            {
+                predmeti.Add(slusa.Predmet);
+            }
+            List<Predmet> sviPredmeti = _predmetData.UcitajSve().ToList();
+            List<Predmet> preostaliPredmeti = new List<Predmet>();
+
+            foreach (Predmet predmet in sviPredmeti)
+            {
+                bool pronadjen = false;
+                foreach (Predmet predmet1 in predmeti)
+                {
+                    if (predmet1.SifraPredmeta == predmet.SifraPredmeta)
+                    {
+                        pronadjen = true;
+                        break;
+                    }
+                }
+                if (pronadjen == false)
+                    preostaliPredmeti.Add(predmet);
+            }
+            model.Predmeti = preostaliPredmeti;
             return View("Izmeni", model);
         }
         public IActionResult IzbrisiStudenta(string id)
@@ -211,13 +267,28 @@ namespace NNProjekat.Controllers
             var model = _studentData.VratiPoJMBG(id);
             return View("Izbrisi", model);
         }
-        [HttpPost]
-        public IActionResult IzmeniPost(string id, Student model)
+
+        [HttpGet]
+        [Route("/Student/DodajPredmetDodaj/{id}")]
+        public IActionResult DodajAktivnost(string id)
         {
-            Console.WriteLine(id + " id studenta za izmenu");
-            model.JMBG = id;
-            Console.WriteLine("Menja studenta***************");
-            _studentData.Izmeni(model);
+            Predmet predmet = _predmetData.Vrati(id);
+            //dodas u json
+            return Json(new { data = predmet });
+        }
+
+
+        [HttpPost]
+        public IActionResult IzmeniPost(StudentDodaj studentDodaj)
+        {
+            Student student = new Student();
+            student.Ime = studentDodaj.Ime;
+            student.Prezime = studentDodaj.Prezime;
+            student.JMBG = studentDodaj.JMBG;
+            student.BrojIndeksa = studentDodaj.BrojIndeksa;
+            JArray nizPredmeta = JArray.Parse(studentDodaj.JsonString);
+            List<Predmet> predmeti = nizPredmeta.ToObject<List<Predmet>>();
+            _studentData.Izmeni(student, predmeti);
             return RedirectToAction("SviStudenti", "Student");
         }
         [HttpPost]

@@ -1,0 +1,93 @@
+﻿@model PredmetDodaj
+@{
+    ViewData["Title"] = "Izbriši predmet";
+}
+@{
+    var parms = new Dictionary<string, string>
+{
+{ "SifraPredmeta", Model.SifraPredmeta }
+};
+}
+
+<div class="forma">
+    <div class="main-div">
+        <div class="panel">
+            <h2>Brisanje predmeta</h2>
+            <p>Informacije o predmetu</p>
+        </div>
+        <form id="mojaForma" method="post" asp-action="IzbrisiPost" asp-controller="Predmet" asp-all-route-data=parms>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label asp-for="SifraPredmeta">Šifra predmeta</label>
+                    <input asp-for="SifraPredmeta" readonly placeholder="Šifra predmeta" class="form-control" type="text" name="SifraPredmeta" value="@Model.SifraPredmeta" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Naziv"></label>
+                    <input asp-for="Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="@Model.Naziv" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="BrojESPB">Broj ESPB poena</label>
+                    <input asp-for="BrojESPB" placeholder="Broj ESPB poena" class="form-control" type="text" name="BrojESPB" value="@Model.BrojESPB" />
+                </div>
+            </div>
+            <div class="list-group" style="width:100%; margin:0 auto;">
+                <label>Tipovi aktivnosti</label>
+                <table id="tipoviAktivnosti" class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Šifra tipa aktivnosti</th>
+                            <th scope="col">Naziv</th>
+                            <th scope="col">Min broj poena</th>
+                            <th scope="col">Maks broj poena</th>
+                            <th scope="col">Težinski koeficijent</th>
+                            <th scope="col">Obavezna</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <br />
+            <button type="submit" id="SacuvajDugme" class="btn btn-primary" name="sacuvaj">Izbriši predmet</button>
+        </form>
+    </div>
+</div>
+<script>
+    var t;
+    var p;
+    $(document).ready(function () {
+
+        t = $("#tipoviAktivnosti").DataTable({
+            "language": {
+                "search": "Pretraga",
+                "processing": "Obrada",
+                "paginate": {
+                    "first": "Prvi",
+                    "previous": "Prethodni",
+                    "next": "Sledeći",
+                    "last": "Poslednji"
+                },
+                "loadingRecords": "Učitavanje podataka",
+                "emptyTable": "Tabela je prazna",
+                "zeroRecords": "Tabela je prazna",
+                "info": "Prikazivanje _START_ do _END_ od _TOTAL_ aktivnosti",
+                "lengthMenu": "Prikazi _MENU_  aktivnosti"
+
+            },
+            dom: "Brtip",
+            // for disable multiple column at once
+            "serverSide": false,
+            ajax: {
+                "url": "/Predmet/VratiTipoveAktivnostiIzmeni/"+'@Html.Raw(Model.SifraPredmeta)',
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "SifraTipaAktivnosti", "name": "SifraTipaAktivnosti", "autoWidth": true },
+                { "data": "Naziv", "name": "Naziv", "autoWidth": true },
+                { "data": "MinBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
+                { "data": "MaxBrojPoena", "name": "MinBrojPoena", "autoWidth": true },
+                { "data": "TezinskiKoeficijent", "name": "MinBrojPoena", "autoWidth": true },
+                { "data": "Obavezna", "name": "Obavezna", "autoWidth": true }
+            ]
+        });
+    });
+</script>

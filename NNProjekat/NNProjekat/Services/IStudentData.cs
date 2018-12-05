@@ -16,5 +16,7 @@ namespace NNProjekat.Services
         Student VratiPoJMBG(string jMBGS);
         void Izbrisi(string JMBG);
         void Izmeni(Student student);
+        Student Dodaj(Student student, List<Predmet> predmeti);
+        Student Izmeni(Student student, List<Predmet> predmeti);
     }
 }

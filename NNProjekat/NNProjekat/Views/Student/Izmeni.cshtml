@@ -1,4 +1,4 @@
-﻿@model Student
+﻿@model StudentDodaj
 @{
     ViewBag.Title = "Izmena studenta";
 }
@@ -11,11 +11,11 @@
             <h2>Izmena studenta</h2>
             <p>Informacije nove o studentu</p>
         </div>
-        <form method="post" asp-action="IzmeniPost" asp-controller="Student" asp-route-id="@Model.JMBG">
+        <form id="studentForma" method="post" asp-action="IzmeniPost" asp-controller="Student">
 
             <div class="form-group">
                 <label asp-for="JMBG"></label>
-                <input disabled asp-for="JMBG" placeholder="JMBG" class="form-control" type="text" name="JMBG" value=@Model.JMBG />
+                <input readonly="readonly" asp-for="JMBG" placeholder="JMBG" class="form-control" type="text" name="JMBG" value=@Model.JMBG />
             </div>
             <div class="form-group">
                 <label asp-for="Ime"></label>
@@ -26,10 +26,169 @@
                 <input asp-for="Prezime" placeholder="Prezime" class="form-control" type="text" name="Prezime" value=@Model.Prezime />
             </div>
             <div class="form-group">
-                <label asp-for="BrojIndeksa"></label>
-                <input asp-for="BrojIndeksa" placeholder="BrojIndeksa" class="form-control" type="text" name="BrojIndeksa" value=@Model.BrojIndeksa />
+                <label asp-for="BrojIndeksa">Broj indeksa</label>
+                <input asp-for="BrojIndeksa" placeholder="Broj indeksa" class="form-control" type="text" name="BrojIndeksa" value=@Model.BrojIndeksa />
             </div>
-            <button type="submit" class="btn btn-primary" name="sacuvaj">Sacuvaj</button>
+            <div class="list-group" style="width:100%; margin:0 auto;">
+                <label>Informacije o tipu aktivnosti</label>
+                <div class="list-group-item">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Predmet</label>
+                            <select id="predmeti" class="form-control" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))"></select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Sačuvaj tip</button>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="button" id="IzbrisiTip" class="btn btn-info fa fa-remove" name="IzbrisiTip"></button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <table id="tipoviAktivnosti" class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th><div>Šifra predmeta</div></th>
+                            <th><div>Naziv</div></th>
+                            <th><div>Broj ESPB poena</div></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <button type="submit" id="SacuvajStudenta" class="btn btn-primary" name="SacuvajStudenta">Sačuvaj</button>
+            <input asp-for="JsonString" id="JsonPredmeti" hidden="hidden" class="form-control" type="text" name="JsonString" value="" />
         </form>
     </div>
 </div>
+<script>
+    var t;
+    $(document).ready(function () {
+
+        if ($('#predmeti').has('option').length == 0) {
+            $("#sacTip").prop('disabled', true);
+
+        }
+        if ($('#predmeti').has('option').length == 0) {
+            $("#sacTip").prop('disabled', true);
+        }
+        t = $("#tipoviAktivnosti").DataTable({
+            "language": {
+                "search": "Pretraga",
+                "processing": "Obrada",
+                "paginate": {
+                    "first": "Prvi",
+                    "previous": "Prethodni",
+                    "next": "Sledeći",
+                    "last": "Poslednji"
+                },
+                "loadingRecords": "Učitavanje podataka",
+                "emptyTable": "Tabela je prazna",
+                "zeroRecords": "Tabela je prazna",
+                "info": "Prikazivanje _START_ do _END_ od _TOTAL_ predmeta",
+                "lengthMenu": "Prikaži _MENU_  predmeta"
+
+            },
+            dom: "Brtip",
+            "serverSide": false,
+
+            "destroy": true,
+            "processing": true, // for show progress bar
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "initComplete": function (settings, json) {
+                alert('DataTables has finished its initialisation.');
+                document.getElementById("JsonPredmeti").value = data["data"];
+            },
+            "ajax": {
+                "type": "GET",
+                "datatype": "json",
+                "url": "/Student/VratiPredmeteIzmeni/"+'@Html.Raw(Model.JMBG)'                
+            },
+
+            "columns": [
+                { "data": "SifraPredmeta", "name": "SifraPredmeta", "autoWidth": true },
+                { "data": "Naziv", "name": "Naziv", "autoWidth": true },
+                { "data": "BrojESPB", "name": "BrojESPB", "autoWidth": true }
+            ]
+
+        });
+        $('#sacTip').on('click', function () {
+            $.ajax({
+                url: "/Student/DodajPredmetDodaj/"
+                    + document.getElementById("predmeti").value,
+                type: 'get',
+                "datatype": "json",
+                success: function (data) {
+                    t.row.add(data["data"]).draw(false);
+                    $("#IzbrisiTip").prop('disabled', true);
+                    $("#predmeti option[value=" + data["data"]["SifraPredmeta"] + "]").remove();
+                    document.getElementById("JsonPredmeti").value = JSON.stringify(t.rows().data().toArray());
+                },
+                error: function (jqxhr, status, exception) {
+                    alert('Exception:', exception.toString());
+                }
+            });
+        });
+
+
+        $('#tipoviAktivnosti tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                $("#IzbrisiTip").prop('disabled', true);
+            } else {
+                t.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+                $("#IzbrisiTip").prop('disabled', false);
+            }
+        });
+
+        $('#IzbrisiTip').click(function () {
+            var selectedRow = t.cell('.selected', 0).data();
+            $("#predmeti").append(new Option(t.cell('.selected', 1).data(), t.cell('.selected', 0).data()));
+
+            $("#IzbrisiTip").prop('disabled', true);
+            t.row('.selected').remove().draw(false);
+            document.getElementById("JsonPredmeti").value = JSON.stringify(t.rows().data().toArray());
+
+        });
+
+
+
+        $('form').bootstrapValidator({
+            fields: {
+                JMBG: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Morate uneti JMBG.'
+                        }
+                    }
+                },
+                Ime: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Morate uneti ime.'
+                        }
+                    }
+                },
+                Prezime: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Morate uneti prezime.'
+                        }
+                    }
+                }
+                ,
+                BrojIndeksa: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Morate uneti broj indeksa.'
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+</script>
+

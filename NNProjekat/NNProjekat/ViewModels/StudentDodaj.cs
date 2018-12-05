@@ -12,5 +12,8 @@ namespace NNProjekat.ViewModels
         public string Ime { get; set; }
         public string Prezime { get; set; }
         public string BrojIndeksa { get; set; }
+        public List<Predmet> Predmeti { get; set; }
+        public String JsonString { get; set; }
+
     }
 }

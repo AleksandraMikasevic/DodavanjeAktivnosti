@@ -11,5 +11,8 @@ namespace NNProjekat.Services
         IQueryable<Predmet> UcitajSve();
         Predmet Vrati(string sifraPredmeta);
         Predmet Dodaj(Predmet predmet);
+        IEnumerable<TipAktivnosti> VratiIzmeni(string sifraPredmeta);
+        void Izmeni(Predmet predmet);
+        void Izbrisi(string id);
     }
 }

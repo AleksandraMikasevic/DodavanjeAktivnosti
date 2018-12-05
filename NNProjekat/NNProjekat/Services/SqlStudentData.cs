@@ -24,9 +24,32 @@ namespace NNProjekat.Services
             return student;
         }
 
+        public Student Dodaj(Student student, List<Predmet> predmeti)
+        {
+            _context.Studenti.Add(student);
+            foreach (Predmet predmet in predmeti)
+            {
+                Slusa slusa = new Slusa();
+                slusa.JMBG = student.JMBG;
+                slusa.SifraPredmeta = predmet.SifraPredmeta;
+                slusa.ZakljucenaOcena = null;
+                slusa.DatumZakljucivanja = null;
+                slusa.DatumPrvogUpisa = DateTime.Now;
+                slusa.PredlozenaOcena = 0;
+                _context.Add(slusa);
+            }
+            _context.SaveChanges();
+            return student;
+        }
+
         public void Izbrisi(string JMBG)
         {
             Student student = _context.Studenti.Where(s => s.JMBG == JMBG).Single();
+            var model = _context.Aktivnosti.Where(a => a.StudentJMBG == JMBG);
+            foreach (Aktivnost aktivnost in model)
+            {
+                _context.Remove(aktivnost);
+            }
             _context.Studenti.Remove(student);
             _context.SaveChanges();
         }
@@ -37,6 +60,36 @@ namespace NNProjekat.Services
             _context.SaveChanges();
         }
 
+        public Student Izmeni(Student student, List<Predmet> predmeti)
+        {
+            _context.Studenti.Update(student);
+            foreach (Predmet predmet in predmeti)
+            {
+                bool nadjen = false;
+                foreach (Slusa slusa1 in _context.Slusanja) {
+                    if (slusa1.JMBG == student.JMBG && slusa1.SifraPredmeta == predmet.SifraPredmeta) {
+                        nadjen = true;
+                        break;
+                    }
+
+                }
+                if (nadjen == false)
+                {
+                    Slusa slusa = new Slusa();
+                    slusa.JMBG = student.JMBG;
+                    slusa.SifraPredmeta = predmet.SifraPredmeta;
+                    slusa.ZakljucenaOcena = null;
+                    slusa.DatumZakljucivanja = null;
+                    slusa.DatumPrvogUpisa = DateTime.Now;
+                    slusa.PredlozenaOcena = 0;
+                    _context.Add(slusa);
+                }
+
+            }
+            _context.SaveChanges();
+            return student;
+        }
+
         public IEnumerable<Student> UcitajSve()
         {
             return _context.Studenti.OrderBy(r => r.BrojIndeksa);
@@ -44,7 +97,7 @@ namespace NNProjekat.Services
 
         public IEnumerable<Slusa> UcitajSvePoPredmetu(string id)
         {
-            return _context.Slusanja.Include(p => p.Student).Include(p => p.Student).Include(p => p.Predmet).Where(p => p.SifraPredmeta==id).OrderBy(p => p.JMBG);
+            return _context.Slusanja.Include(p => p.Student).Include(p => p.Student).Include(p => p.Predmet).Where(p => p.SifraPredmeta == id).OrderBy(p => p.JMBG);
         }
 
         public Student Vrati(string brojIndeksa)

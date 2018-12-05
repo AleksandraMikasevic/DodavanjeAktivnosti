@@ -180,18 +180,20 @@ namespace NNProjekat.Controllers
         public IActionResult SveAktivnostiPost()
         {
 
-            var model = _aktivnostData.UcitajSve();
+            var model = _aktivnostData.UcitajSve().Where(a => a.Validna == true);
             Console.WriteLine("ovo pravi problem");
 
             foreach (Aktivnost aktivnost in model) {
-                Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
-                if (slusa.ZakljucenaOcena != null)
-                {
-                    model = model.Where(m => m.StudentJMBG != aktivnost.StudentJMBG || m.NastavnikJMBG != aktivnost.NastavnikJMBG ||
-                    m.Datum != aktivnost.Datum || 
-                    m.SifraPredmeta != aktivnost.SifraPredmeta || 
-                    m.SifraTipaAktivnosti != aktivnost.SifraTipaAktivnosti);
-                }
+              
+                    Slusa slusa = _slusanjaData.Vrati(aktivnost.StudentJMBG, aktivnost.SifraPredmeta);
+                    if (slusa.ZakljucenaOcena != null)
+                    {
+                        model = model.Where(m => m.StudentJMBG != aktivnost.StudentJMBG || m.NastavnikJMBG != aktivnost.NastavnikJMBG ||
+                        m.Datum != aktivnost.Datum ||
+                        m.SifraPredmeta != aktivnost.SifraPredmeta ||
+                        m.SifraTipaAktivnosti != aktivnost.SifraTipaAktivnosti);
+                    }
+               
                
             }
 
@@ -338,6 +340,7 @@ namespace NNProjekat.Controllers
                 aktivnost.Status = true;
             }
             aktivnost.Validna = false;
+            Console.WriteLine("briseeee! "+aktivnost.SifraPredmeta);
             _aktivnostData.Izbrisi(aktivnost);
             _slusanjaData.IzracunajOcenu(model.StudentJMBG, model.SifraPredmeta, _aktivnostData.UcitajSvePoStudentuIPredmetu(model.StudentJMBG, model.SifraPredmeta));
             return RedirectToAction("SveAktivnosti");

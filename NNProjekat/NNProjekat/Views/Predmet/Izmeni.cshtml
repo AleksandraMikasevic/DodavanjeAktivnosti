@@ -1,33 +1,32 @@
 ﻿@model PredmetDodaj
 @{
-    ViewData["Title"] = "Dodaj predmet";
+    ViewData["Title"] = "Izmeni predmet";
 }
 
 <div class="forma">
     <div class="main-div">
         <div class="panel">
-            <h2>Unos predmeta</h2>
-            <p>Unesite informacije o predmetu</p>
+            <h2>Izmena predmeta</h2>
+            <p>Unesite nove informacije o predmetu</p>
         </div>
-        <form id="mojaForma" method="post" asp-action="DodajPost" asp-controller="Predmet">
+        <form id="mojaForma" method="post" asp-action="IzmeniPost" asp-controller="Predmet" >
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label asp-for="SifraPredmeta">Šifra predmeta</label>
-                    <input asp-for="SifraPredmeta" placeholder="Šifra predmeta" class="form-control" type="text" name="SifraPredmeta" value="" />
+                    <input asp-for="SifraPredmeta" readonly="readonly" placeholder="Šifra predmeta" class="form-control" type="text" name="SifraPredmeta" value="@Model.SifraPredmeta" />
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="Naziv"></label>
-                    <input asp-for="Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="" />
+                    <input asp-for="Naziv" placeholder="Naziv" class="form-control" type="text" name="Naziv" value="@Model.Naziv" />
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="BrojESPB">Broj ESPB poena</label>
-                    <input asp-for="BrojESPB" placeholder="Broj ESPB poena" class="form-control" type="text" name="BrojESPB" value="" />
+                    <input asp-for="BrojESPB" placeholder="Broj ESPB poena" class="form-control" type="text" name="BrojESPB" value="@Model.SifraPredmeta" />
                 </div>
             </div>
             <div class="list-group" style="width:100%; margin:0 auto;">
                 <label>Informacije o tipu aktivnosti</label>
                 <div class="list-group-item">
-
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Naziv</label>
@@ -54,7 +53,7 @@
                             <input type="checkbox" name="obavezna" id="Obavezna" /> <label>Obavezna</label>
                         </div>
                         <div class="form-group col-md-4">
-                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Sačuvaj tip</button>
+                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Sacuvaj tip</button>
                         </div>
                         <div class="form-group col-md-2">
                             <button type="button" id="IzmeniTip" class="btn btn-info fa fa-cogs" name="IzmeniTip"></button>
@@ -79,7 +78,7 @@
                 </table>
             </div>
             <br />
-            <button type="button" id="SacuvajDugme" class="btn btn-primary" name="sacuvaj">Sačuvaj predmet</button>
+            <button type="button" id="SacuvajDugme" class="btn btn-primary" name="sacuvaj">Izmeni predmet</button>
             <input asp-for="JsonString" id="JsonString" hidden="hidden" class="form-control" type="text" name="JsonString" value="" />
             <input type="text" id="SifraTipa" value="" hidden="hidden" />
         </form>
@@ -89,33 +88,9 @@
     var t;
     var p;
     $(document).ready(function () {
-        $('form').bootstrapValidator({
-            fields: {
-                SifraPredmeta: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Morate uneti šifru predmeta.'
-                        }
-                    }
-                },
-                Naziv: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Morate uneti naziv predmeta.'
-                        }
-                    }
-                },
-                BrojESPB: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Morate uneti broj ESPB poena.'
-                        }
-                    }
-                }
-            }
-        });
+
         t = $("#tipoviAktivnosti").DataTable({
-    "language": {
+            "language": {
                 "search": "Pretraga",
                 "processing": "Obrada",
                 "paginate": {
@@ -135,11 +110,10 @@
             "serverSide": false,
             // for disable multiple column at once
             ajax: {
-                "url": "/Predmet/VratiTipoveAktivnostiDodaj",
+                "url": "/Predmet/VratiTipoveAktivnostiIzmeni/"+ '@Html.Raw(Model.SifraPredmeta)',
                 "type": "GET",
-                "datatype": "json",
-                dataSrc: ''
-            },
+                "datatype": "json"
+           },
             "columns": [
                 { "data": "SifraTipaAktivnosti", "name": "SifraTipaAktivnosti", "autoWidth": true },
                 { "data": "Naziv", "name": "Naziv", "autoWidth": true },

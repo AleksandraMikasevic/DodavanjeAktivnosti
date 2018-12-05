@@ -2,7 +2,7 @@
 @{
     var XLabels = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Ocene.Select(x => x.DataOcena).ToList());
     var YValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Ocene.Select(x => x.BrojStudenata).ToList());
-    ViewBag.Title = "Graficki prikaz predmeta";
+    ViewBag.Title = "Grafički prikaz predmeta";
 }
 <br />
 <div class="list-group" style="width:90%; margin:0 auto;">
