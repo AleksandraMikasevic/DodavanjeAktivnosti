@@ -38,9 +38,13 @@
                             <select id="predmeti" class="form-control" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))"></select>
                         </div>
                         <div class="form-group col-md-4">
-                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Sačuvaj tip</button>
+                            <br />
+                            <br />
+                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Dodaj predmet</button>
                         </div>
                         <div class="form-group col-md-2">
+                            <br />
+                            <br />
                             <button type="button" id="IzbrisiTip" class="btn btn-info fa fa-remove" name="IzbrisiTip"></button>
                         </div>
                     </div>
@@ -64,8 +68,7 @@
 <script>
     var t;
     $(document).ready(function () {
-
-        if ($('#predmeti').has('option').length == 0) {
+               if ($('#predmeti').has('option').length == 0) {
             $("#sacTip").prop('disabled', true);
 
         }
@@ -96,14 +99,13 @@
             "processing": true, // for show progress bar
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
-            "initComplete": function (settings, json) {
-                alert('DataTables has finished its initialisation.');
-                document.getElementById("JsonPredmeti").value = data["data"];
+            "initComplete": function (settings, data) {
+                document.getElementById("JsonPredmeti").value = JSON.stringify(data["data"]);
             },
             "ajax": {
                 "type": "GET",
                 "datatype": "json",
-                "url": "/Student/VratiPredmeteIzmeni/"+'@Html.Raw(Model.JMBG)'                
+                "url": "/Student/VratiPredmeteIzmeni/"+'@Html.Raw(Model.JMBG)'
             },
 
             "columns": [
@@ -124,6 +126,7 @@
                     $("#IzbrisiTip").prop('disabled', true);
                     $("#predmeti option[value=" + data["data"]["SifraPredmeta"] + "]").remove();
                     document.getElementById("JsonPredmeti").value = JSON.stringify(t.rows().data().toArray());
+
                 },
                 error: function (jqxhr, status, exception) {
                     alert('Exception:', exception.toString());

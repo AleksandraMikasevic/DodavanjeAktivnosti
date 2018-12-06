@@ -63,11 +63,29 @@ namespace NNProjekat.Services
         public Student Izmeni(Student student, List<Predmet> predmeti)
         {
             _context.Studenti.Update(student);
+
+            foreach (Slusa slusa1 in _context.Slusanja.Where(s => s.JMBG == student.JMBG))
+            {
+                bool nadjen = false;
+                foreach (Predmet predmet in predmeti)
+                {
+                    if (slusa1.SifraPredmeta == predmet.SifraPredmeta) {
+                        nadjen = true;
+                        break;
+                    }
+                }
+                if (nadjen == false) {
+                    _context.Slusanja.Remove(slusa1);
+                }
+            }
+
             foreach (Predmet predmet in predmeti)
             {
                 bool nadjen = false;
-                foreach (Slusa slusa1 in _context.Slusanja) {
-                    if (slusa1.JMBG == student.JMBG && slusa1.SifraPredmeta == predmet.SifraPredmeta) {
+                foreach (Slusa slusa1 in _context.Slusanja)
+                {
+                    if (slusa1.JMBG == student.JMBG && slusa1.SifraPredmeta == predmet.SifraPredmeta)
+                    {
                         nadjen = true;
                         break;
                     }

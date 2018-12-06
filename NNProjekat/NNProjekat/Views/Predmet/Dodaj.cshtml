@@ -79,7 +79,7 @@
                 </table>
             </div>
             <br />
-            <button type="button" id="SacuvajDugme" class="btn btn-primary" name="sacuvaj">Sačuvaj predmet</button>
+            <button type="submit" id="SacuvajDugme" class="btn btn-primary" name="sacuvaj">Sačuvaj predmet</button>
             <input asp-for="JsonString" id="JsonString" hidden="hidden" class="form-control" type="text" name="JsonString" value="" />
             <input type="text" id="SifraTipa" value="" hidden="hidden" />
         </form>
@@ -131,6 +131,9 @@
                 "lengthMenu": "Prikazi _MENU_  tipova aktivnosti"
 
             },
+            "initComplete": function (settings, data) {
+                document.getElementById("JsonString").value = JSON.stringify(data["data"]);
+            },
             dom: "Brtip",
             "serverSide": false,
             // for disable multiple column at once
@@ -165,6 +168,13 @@
                         t.row.add(data["data"]).draw(false);
                         $("#IzbrisiTip").prop('disabled', true);
                         $("#IzmeniTip").prop('disabled', true);
+                        document.getElementById("JsonString").value = JSON.stringify(t.rows().data().toArray());
+                        document.getElementById("MinBrojPoena").value = "";
+                        document.getElementById("TezKoef").value = "";
+                        document.getElementById("MaxBrojPoena").value = "";
+                        $("input[type='checkbox']").prop('checked', false);
+                        document.getElementById("Naziv123").value = "";
+                        document.getElementById("SifraTipa").value = "";
                     },
                     error: function (jqxhr, status, exception) {
                         alert('Exception:', exception.toString());
@@ -191,6 +201,13 @@
                         });
                         $("#IzbrisiTip").prop('disabled', true);
                         $("#IzmeniTip").prop('disabled', true);
+                        document.getElementById("SifraTipa").value = "";
+                        document.getElementById("JsonString").value = JSON.stringify(t.rows().data().toArray());
+                        document.getElementById("MinBrojPoena").value = "";
+                        document.getElementById("TezKoef").value = "";
+                        document.getElementById("MaxBrojPoena").value = "";
+                        $("input[type='checkbox']").prop('checked', false);
+                        document.getElementById("Naziv123").value = "";
                         document.getElementById("SifraTipa").value = "";
                     },
                     error: function (jqxhr, status, exception) {
@@ -230,18 +247,19 @@
                     $("#IzbrisiTip").prop('disabled', true);
                     $("#IzmeniTip").prop('disabled', true);
                     t.row('.selected').remove().draw(false);
+                    document.getElementById("JsonString").value = JSON.stringify(t.rows().data().toArray());
                 },
                 error: function (jqxhr, status, exception) {
                     alert('Exception:', exception.toString());
                 }
             });
         });
-
+        /*
         $('#SacuvajDugme').click(function () {
             document.getElementById("JsonString").value = JSON.stringify(t.rows().data().toArray());
             $("#mojaForma").submit();
         });
-
+        */
         $('#IzmeniTip').click(function () {
             var selectedRowSifraTipaAktivnosti = t.cell('.selected', 0).data();
             var selectedRowNaziv = t.cell('.selected', 1).data();

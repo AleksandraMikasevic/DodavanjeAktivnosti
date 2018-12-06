@@ -216,7 +216,7 @@ namespace NNProjekat.Controllers
             slusa.JMBG = JMBG;
             slusa.PredlozenaOcena = 0;
             slusa.ZakljucenaOcena = null;
-            slusa.DatumPrvogUpisa = new DateTime();
+            slusa.DatumPrvogUpisa = DateTime.Now;
             slusa.DatumZakljucivanja = null;
             _slusanjaData.Sacuvaj(slusa);
         }
@@ -286,6 +286,7 @@ namespace NNProjekat.Controllers
             student.Prezime = studentDodaj.Prezime;
             student.JMBG = studentDodaj.JMBG;
             student.BrojIndeksa = studentDodaj.BrojIndeksa;
+            Console.WriteLine("JSON rezultat: "+studentDodaj.JsonString);
             JArray nizPredmeta = JArray.Parse(studentDodaj.JsonString);
             List<Predmet> predmeti = nizPredmeta.ToObject<List<Predmet>>();
             _studentData.Izmeni(student, predmeti);
@@ -433,7 +434,7 @@ namespace NNProjekat.Controllers
         [Route("/Student/IzbrisiZakljucenuOcenu/{JMBG}/{SifraPredmeta}")]
         public IActionResult IzbrisiZakljucenuOcenu(string JMBG, string sifraPredmeta)
         {
-            _slusanjaData.ZakljuciOcenuPromena(JMBG, sifraPredmeta,null);
+            _slusanjaData.ZakljuciOcenuPromena(JMBG, sifraPredmeta, null);
             return RedirectToAction("StudentPredmetAktivnosti");
         }
 

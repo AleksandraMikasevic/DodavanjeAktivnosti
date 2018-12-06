@@ -35,9 +35,13 @@
                             <select id="predmeti" class="form-control" asp-items="@(new SelectList(Model.Predmeti, "SifraPredmeta","Naziv"))"></select>
                         </div>
                         <div class="form-group col-md-4">
-                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Sačuvaj tip</button>
+                            <br />
+                            <br />
+                            <button type="button" id="sacTip" class="btn btn-info" name="sacTip">Dodaj predmet</button>
                         </div>
                         <div class="form-group col-md-2">
+                            <br />
+                            <br />
                             <button type="button" id="IzbrisiTip" class="btn btn-info fa fa-remove" name="IzbrisiTip"></button>
                         </div>
                     </div>
@@ -84,6 +88,9 @@
                 "info": "Prikazivanje _START_ do _END_ od _TOTAL_ predmeta",
                 "lengthMenu": "Prikaži _MENU_  predmeta"
 
+            },
+            "initComplete": function (settings, data) {
+                document.getElementById("JsonString").value = JSON.stringify(data["data"]);
             },
             dom: "Brtip",
             "serverSide": false,

@@ -202,6 +202,7 @@ namespace NNProjekat.Controllers
         [HttpPost]
         public IActionResult DodajPost(PredmetDodaj predmetDodaj)
         {
+            Console.WriteLine("Dodaj");
             Predmet predmet = new Predmet();
             predmet.Naziv = predmetDodaj.Naziv;
             predmet.SifraPredmeta = predmetDodaj.SifraPredmeta;
@@ -220,6 +221,10 @@ namespace NNProjekat.Controllers
             predmet.BrojESPB = predmetDodaj.BrojESPB;
             JArray nizTipova = JArray.Parse(predmetDodaj.JsonString);
             predmet.TipoviAktivnosti = nizTipova.ToObject<List<TipAktivnosti>>();
+            foreach (TipAktivnosti tip in predmet.TipoviAktivnosti) {
+                tip.SifraPredmeta = predmet.SifraPredmeta;
+                tip.Predmet = predmet;
+            }
             _predmetData.Izmeni(predmet);
             return RedirectToAction("SviPredmeti", "Predmet");
         }

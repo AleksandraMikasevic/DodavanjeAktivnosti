@@ -26,16 +26,62 @@ namespace NNProjekat.Services
 
         public void Izbrisi(string id)
         {
-            Console.WriteLine(id+" id kad cuva studentaaaaa");
+            Console.WriteLine(id + " id kad cuva studentaaaaa");
             Predmet predmet = _context.Predmeti.Where(s => s.SifraPredmeta == id).Single();
             _context.Predmeti.Remove(predmet);
             _context.SaveChanges();
         }
 
-        public void Izmeni(Predmet predmet)
+        public void Izmeni(Predmet model)
         {
-            _context.Predmeti.Update(predmet);
-            _context.SaveChanges();
+             var existingParent = _context.Predmeti
+                  .Where(p => p.SifraPredmeta == model.SifraPredmeta)
+                  .Include(p => p.TipoviAktivnosti)
+                  .SingleOrDefault();
+
+              if (existingParent != null)
+              {
+                  // Update parent
+                  _context.Entry(existingParent).CurrentValues.SetValues(model);
+
+                  // Delete children
+                  foreach (var existingChild in existingParent.TipoviAktivnosti.ToList())
+                  {
+                      if (!model.TipoviAktivnosti.Any(c => c.SifraTipaAktivnosti == existingChild.SifraTipaAktivnosti))
+                          _context.TipoviAktivnosti.Remove(existingChild);
+                  }
+
+                  // Update and Insert children
+                  foreach (var childModel in model.TipoviAktivnosti)
+                  {
+                      var existingChild = existingParent.TipoviAktivnosti
+                          .Where(c => c.SifraTipaAktivnosti == childModel.SifraTipaAktivnosti)
+                          .SingleOrDefault();
+
+                      if (existingChild != null)
+                          // Update child
+                          _context.Entry(existingChild).CurrentValues.SetValues(childModel);
+                      else
+                      {
+                        Console.WriteLine("Child");
+                          // Insert child
+                          var newChild = new TipAktivnosti
+                          {
+                              SifraTipaAktivnosti = childModel.SifraTipaAktivnosti,
+                              Naziv = childModel.Naziv,
+                              MinBrojPoena = childModel.MinBrojPoena,
+                              MaxBrojPoena = childModel.MaxBrojPoena,
+                              TezinskiKoeficijent = childModel.TezinskiKoeficijent,
+                              Obavezna = childModel.Obavezna,
+                              SifraPredmeta = childModel.SifraPredmeta
+                          };
+                        _context.TipoviAktivnosti.Add(newChild);
+                        Console.WriteLine("Child");
+                    }
+                }
+
+                  _context.SaveChanges();
+              }
         }
 
         public IQueryable<Predmet> UcitajSve()
@@ -54,6 +100,6 @@ namespace NNProjekat.Services
 
         }
 
-       
+
     }
 }

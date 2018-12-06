@@ -32,10 +32,12 @@ namespace NNProjekat.Controllers
             if (ModelState.IsValid)
             {
                 var isValid = _nastavnikData.ProveriNastavnika(model.Username, model.Password); //proveris iz baze
+                Console.WriteLine("isValid:       "+isValid);
                 if (!isValid)
                 {
-                    ModelState.AddModelError("", "username or password is invalid");
-                    return RedirectToAction("Index");
+                    Console.WriteLine("uslo u greskuuu ");
+                    ModelState.AddModelError("error", "Ne postoji nastavnik sa unetim korisničkim imenom i/ili lozinkom.");
+                    return View("login");
                 }
                 Nastavnik nastavnik = _nastavnikData.VratiPoUsername(model.Username);
                 // Create the identity from the user info

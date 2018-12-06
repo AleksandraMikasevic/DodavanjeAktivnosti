@@ -22,15 +22,15 @@ namespace NNProjekat.Services
             Slusa slusanja = _context.Slusanja.Include(s => s.Predmet).Include(s => s.Predmet.TipoviAktivnosti).Include(s => s.Student).Where(s => s.Predmet.SifraPredmeta == sifraPredmeta).Where(s => s.Student.JMBG == JMBG).FirstOrDefault();
             Console.WriteLine(slusanja.Predmet.Naziv + "              SLUSANJA");
             int konacnaOcena = 0;
-            if (slusanja.Predmet.Naziv == "Programiranje 1")
+           /* if (slusanja.Predmet.Naziv == "Programiranje 1")
             {
                 konacnaOcena = ocenaProgramiranje1(slusanja, aktivnostiStudenta.ToList());
                 Console.WriteLine("KonacnaOcena " + konacnaOcena);
-            }
-            if (slusanja.Predmet.Naziv == "Upravljanje dokumentacijom")
-            {
+            }*/
+            //else
+            //{
                 konacnaOcena = ocenaUpravljanjeDokumentacijom(slusanja, aktivnostiStudenta.ToList());
-            }
+            //}
             slusanja.PredlozenaOcena = konacnaOcena;
             _context.Slusanja.Update(slusanja);
             _context.SaveChanges();
